@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ポーカー プリフロップレンジチェック</title>
+  <title>プリフロップアクション</title>
   <style>
     body { font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: auto; }
     button { margin: 5px; padding: 10px 15px; font-size: 16px; cursor: pointer; }
@@ -13,11 +13,11 @@
   </style>
 </head>
 <body>
-  <h1>ポーカー プリフロップレンジチェック</h1>
+  <h1>プリフロップアクション</h1>
 
   <div id="modeButtons">
-    <button id="btnOpen" class="active" onclick="setMode('vs_open')">オープンレンジ確認</button>
-    <button id="btn3bet" onclick="setMode('vs_3bet')">3bet対応確認</button>
+    <button id="btnOpen" class="active" onclick="setMode('vs_open')">オープンレンジ</button>
+    <button id="btn3bet" onclick="setMode('vs_3bet')">コールドアクション</button>
   </div>
 
   <div id="questionArea">
@@ -27,12 +27,12 @@
 
   <div>
     <button onclick="checkAnswer('3bet')">3bet</button>
-    <button onclick="checkAnswer('call')">コール</button>
-    <button onclick="checkAnswer('fold')">フォールド</button>
+    <button onclick="checkAnswer('call')">Call</button>
+    <button onclick="checkAnswer('fold')">Fold</button>
   </div>
 
   <p id="result"></p>
-  <button onclick="generateSituation()">次の問題</button>
+  <button onclick="generateSituation()">NEXT</button>
 
   <script>
     const positions = ["UTG", "MP", "CO", "BTN"];
