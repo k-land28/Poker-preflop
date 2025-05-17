@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>プリフロップ練習</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h2>プリフロップ練習</h2>
+  <div id="situation">
+    <p id="opener"></p>
+    <p id="hero"></p>
+    <p id="hand"></p>
+  </div>
+
+  <div id="actions">
+    <button onclick="checkAnswer('fold')">フォールド</button>
+    <button onclick="checkAnswer('call')">コール</button>
+    <button onclick="checkAnswer('3bet')">3ベット</button>
+  </div>
+
+  <p id="result"></p>
+
+  <button onclick="generateSituation()">次の問題</button>
+
+  <script src="script.js"></script>
+</body>
+</html>
