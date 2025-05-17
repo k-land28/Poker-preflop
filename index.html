@@ -2,27 +2,112 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>プリフロップ練習</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Preflop Trainer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 30px;
+      background-color: #f0f0f0;
+    }
+    h1 {
+      color: #333;
+    }
+    .info {
+      font-size: 1.2em;
+      margin: 15px 0;
+    }
+    .buttons button {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 1em;
+    }
+    #result {
+      font-size: 1.5em;
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
-  <h2>プリフロップ練習</h2>
-  <div id="situation">
-    <p id="opener"></p>
-    <p id="hero"></p>
-    <p id="hand"></p>
+  <h1>Preflop Trainer</h1>
+
+  <div class="info" id="opener"></div>
+  <div class="info" id="hero"></div>
+  <div class="info" id="hand"></div>
+
+  <div class="buttons">
+    <button onclick="checkAnswer('3bet')">3bet</button>
+    <button onclick="checkAnswer('call')">Call</button>
+    <button onclick="generateSituation()">次の問題</button>
   </div>
 
-  <div id="actions">
-    <button onclick="checkAnswer('fold')">フォールド</button>
-    <button onclick="checkAnswer('call')">コール</button>
-    <button onclick="checkAnswer('3bet')">3ベット</button>
-  </div>
+  <div id="result"></div>
 
-  <p id="result"></p>
+  <script>
+    const positions = ["UTG", "MP", "CO", "BTN"];
+    const hands = ["AA", "AKs", "AQs", "AJo", "KTs", "99", "QQ", "JJ", "KQs", "ATs"]; // 自分の使いたいハンドを追加してね
 
-  <button onclick="generateSituation()">次の問題</button>
+    // 自分で設定するレンジ（ここを自由にカスタマイズ！）
+    const myRange = {
+      "CO_vs_UTG": {
+        "3bet": ["AKs", "QQ", "JJ"],
+        "call": ["AQs", "99"],
+      },
+      "BTN_vs_MP": {
+        "3bet": ["AKs", "AQs", "KTs"],
+        "call": ["AJo", "99", "AJs"],
+      },
+      "MP_vs_UTG": {
+        "3bet": ["QQ", "AKs"],
+        "call": ["JJ", "AQs"],
+      },
+      "BTN_vs_CO": {
+        "3bet": ["AQs", "KQs"],
+        "call": ["ATs", "99"],
+      }
+      // 必要なポジション追加してOK！
+    };
 
-  <script src="script.js"></script>
+    let currentSituation = {};
+
+    function generateSituation() {
+      const opener = positions[Math.floor(Math.random() * 2)]; // UTG or MP
+      const heroIndex = positions.indexOf(opener) + 1;
+      const heroCandidates = positions.slice(heroIndex);
+      const hero = heroCandidates[Math.floor(Math.random() * heroCandidates.length)];
+      const hand = hands[Math.floor(Math.random() * hands.length)];
+
+      currentSituation = {
+        opener,
+        hero,
+        hand
+      };
+
+      document.getElementById("opener").innerText = `オープン: ${opener}`;
+      document.getElementById("hero").innerText = `あなたのポジション: ${hero}`;
+      document.getElementById("hand").innerText = `あなたのハンド: ${hand}`;
+      document.getElementById("result").innerText = "";
+    }
+
+    function checkAnswer(action) {
+      const key = `${currentSituation.hero}_vs_${currentSituation.opener}`;
+      const range = myRange[key];
+
+      if (!range) {
+        document.getElementById("result").innerText = "❓ この状況のレンジが未定義です";
+        return;
+      }
+
+      const isCorrect = range[action]?.includes(currentSituation.hand);
+
+      if (isCorrect) {
+        document.getElementById("result").innerText = "✅ 正解！";
+      } else {
+        document.getElementById("result").innerText = "❌ 不正解";
+      }
+    }
+
+    generateSituation();  // 起動時に1問目を表示
+  </script>
 </body>
 </html>
