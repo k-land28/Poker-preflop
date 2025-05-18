@@ -44,6 +44,7 @@ const situationText = document.getElementById('situationText');
 const handText = document.getElementById('handText');
 const actionButtons = document.getElementById('actionButtons');
 const resultText = document.getElementById('resultText');
+const nextButton = document.getElementById('nextButton');
 const tabs = document.querySelectorAll('.tab-button');
 
 function clearPositions() {
@@ -142,6 +143,11 @@ tabs.forEach(tab => {
     const mode = tab.dataset.mode;
     if (mode !== currentMode) switchMode(mode);
   });
+});
+
+nextButton.addEventListener('click', () => {
+  currentIndex++;
+  displayQuestion();
 });
 
 window.addEventListener('load', () => switchMode(currentMode));
