@@ -3,7 +3,7 @@ body {
   text-align: center;
   padding: 10px;
   margin: 0;
-  background-color: #f7f7f7;
+  background-color: #f0f0f0;
 }
 
 .tab-container {
@@ -34,14 +34,14 @@ body {
 }
 
 #table-container {
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 
 .poker-table {
   width: 100%;
-  max-width: 350px;
-  height: 180px;
-  margin: 0 auto 10px auto;
+  max-width: 320px;
+  height: 160px;
+  margin: 0 auto 15px auto;
   background: radial-gradient(ellipse at center, #4caf50 0%, #388e3c 100%);
   border-radius: 50% / 40%;
   position: relative;
@@ -51,8 +51,8 @@ body {
 
 .position {
   position: absolute;
-  width: 60px;
-  height: 30px;
+  width: 50px;
+  height: 28px;
   background-color: #ffffffcc;
   border: 2px solid #444;
   border-radius: 15px;
@@ -63,12 +63,12 @@ body {
   font-size: 12px;
 }
 
-#UTG { top: 5%; left: 50%; transform: translate(-50%, -50%); }
-#HJ  { top: 30%; left: 90%; transform: translate(-50%, -50%); }
-#CO  { top: 70%; left: 90%; transform: translate(-50%, -50%); }
-#BTN { top: 95%; left: 50%; transform: translate(-50%, -50%); }
-#SB  { top: 70%; left: 10%; transform: translate(-50%, -50%); }
-#BB  { top: 30%; left: 10%; transform: translate(-50%, -50%); }
+#UTG { top: 0%; left: 50%; transform: translate(-50%, 0%); }
+#HJ  { top: 25%; left: 92%; transform: translate(-50%, -50%); }
+#CO  { top: 75%; left: 92%; transform: translate(-50%, -50%); }
+#BTN { top: 100%; left: 50%; transform: translate(-50%, -100%); }
+#SB  { top: 75%; left: 8%; transform: translate(-50%, -50%); }
+#BB  { top: 25%; left: 8%; transform: translate(-50%, -50%); }
 
 .position.open {
   background-color: #ffecb3;
@@ -84,7 +84,7 @@ body {
 
 #question-text {
   font-size: 18px;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   white-space: pre-line;
 }
 
@@ -92,7 +92,7 @@ body {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 15px;
+  gap: 12px;
 }
 
 #options-container button {
