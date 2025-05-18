@@ -39,14 +39,14 @@ button.active {
   margin: 20px auto 10px auto;
   width: 90vw;
   max-width: 400px;
-  height: 220px;
+  height: 200px;
+  background-color: #1e1e1e;
   border: 3px solid #00bcd4;
   border-radius: 50% / 35%;
   position: relative;
-  background-color: #1e1e1e;
 }
 
-/* 座席スタイル */
+/* 座席 */
 .seat {
   position: absolute;
   width: 50px;
@@ -60,7 +60,15 @@ button.active {
   text-align: center;
 }
 
-/* hero/opener ハイライト */
+/* ポジションごとの座標配置 */
+#seat-0 { top: 0%;   left: 50%; transform: translate(-50%, -50%); } /* UTG */
+#seat-1 { top: 20%;  left: 90%; transform: translate(-50%, -50%); } /* MP */
+#seat-2 { top: 70%;  left: 90%; transform: translate(-50%, -50%); } /* CO */
+#seat-3 { top: 100%; left: 50%; transform: translate(-50%, -50%); } /* BTN */
+#seat-4 { top: 70%;  left: 10%; transform: translate(-50%, -50%); } /* SB */
+#seat-5 { top: 20%;  left: 10%; transform: translate(-50%, -50%); } /* BB */
+
+/* ハイライト */
 .hero {
   background-color: #00c853 !important;
   color: black;
@@ -73,16 +81,8 @@ button.active {
   font-weight: bold;
 }
 
-/* 各座席位置（楕円に沿って配置） */
-#seat-0 { top: 5%;   left: 42%; }  /* UTG */
-#seat-1 { top: 20%;  left: 75%; }  /* MP */
-#seat-2 { top: 55%;  left: 83%; }  /* CO */
-#seat-3 { top: 85%;  left: 42%; }  /* BTN */
-#seat-4 { top: 55%;  left: 1%;  }  /* SB */
-#seat-5 { top: 20%;  left: 8%;  }  /* BB */
-
 #questionArea {
-  margin-top: 5px;
+  margin-top: 10px;
   font-size: 1.1em;
 }
 
