@@ -1,84 +1,80 @@
-let mode = "vs_open"; // デフォルトはオープン判断モード
+// script.js
+
 const positions = ["UTG", "MP", "CO", "BTN", "SB", "BB"];
-const hands = ["AA", "KK", "QQ", "JJ", "TT", "AKs", "AQs", "AJs", "KQs", "AKo", "AQo", "AJo", "KQo"];
-const actions = {
-  vs_open: ["フォールド", "オープン"],
-  vs_cold: ["フォールド", "コール", "スリーベット"]
-};
+let mode = "vs_open"; // デフォルトモード
 
-function setMode(selectedMode) {
-  mode = selectedMode;
-
+function setMode(newMode) {
+  mode = newMode;
   document.getElementById("btnOpen").classList.remove("active");
   document.getElementById("btnCold").classList.remove("active");
-  if (mode === "vs_open") {
-    document.getElementById("btnOpen").classList.add("active");
-  } else {
-    document.getElementById("btnCold").classList.add("active");
-  }
-
-  generateSituation();
+  document.getElementById("btn" + (newMode === "vs_open" ? "Open" : "Cold")).classList.add("active");
+  document.getElementById("result").textContent = "";
+  showNewHand();
 }
 
-function generateSituation() {
-  clearSeatStyles();
+function showNewHand() {
+  const heroPosition = Math.floor(Math.random() * 6);
+  let openerPosition = null;
 
-  const heroIndex = Math.floor(Math.random() * 6);
-  let openerIndex = null;
   if (mode === "vs_cold") {
     do {
-      openerIndex = Math.floor(Math.random() * 6);
-    } while (openerIndex === heroIndex);
+      openerPosition = Math.floor(Math.random() * 6);
+    } while (openerPosition === heroPosition);
   }
 
-  const heroPos = positions[heroIndex];
-  const openerPos = mode === "vs_cold" ? positions[openerIndex] : null;
-  const hand = hands[Math.floor(Math.random() * hands.length)];
-
-  // 座席表示更新
-  document.getElementById(`seat-${heroIndex}`).classList.add("hero");
-  if (mode === "vs_cold" && openerIndex !== null) {
-    document.getElementById(`seat-${openerIndex}`).classList.add("opener");
-  }
-
-  document.getElementById("info").textContent =
-    mode === "vs_open"
-      ? `${heroPos}からオープンしますか？`
-      : `${openerPos}がオープンしました。${heroPos}でどう対応しますか？`;
-
-  document.getElementById("hand").textContent = `あなたのハンド: ${hand}`;
-
-  const actionArea = document.getElementById("actionButtons");
-  actionArea.innerHTML = "";
-  actions[mode].forEach(action => {
-    const btn = document.createElement("button");
-    btn.textContent = action;
-    btn.onclick = () => checkAnswer(action, hand, heroPos, openerPos);
-    actionArea.appendChild(btn);
-  });
-
-  document.getElementById("result").textContent = "";
-}
-
-function clearSeatStyles() {
-  for (let i = 0; i < 6; i++) {
-    document.getElementById(`seat-${i}`).classList.remove("hero", "opener");
-  }
-}
-
-function checkAnswer(action, hand, heroPos, openerPos) {
-  // 本来はレンジを参照して判定する
-  // 仮実装として「AK以上、TT以上は強い」とみなす
-  const strongHands = ["AA", "KK", "QQ", "JJ", "TT", "AKs", "AKo"];
-  let correct = false;
+  const hand = generateRandomHand();
+  document.getElementById("hand").textContent = `Your Hand: ${hand}`;
 
   if (mode === "vs_open") {
-    correct = action === "オープン" ? strongHands.includes(hand) : !strongHands.includes(hand);
+    document.getElementById("info").textContent = `Your Position：${positions[heroPosition]}`;
   } else {
-    correct = action === "スリーベット" ? strongHands.includes(hand) : !strongHands.includes(hand);
+    document.getElementById("info").textContent = `Open Raise：${positions[openerPosition]}\nYour Position：${positions[heroPosition]}`;
   }
 
-  document.getElementById("result").textContent = correct ? "正解！" : "不正解...";
+  updateTableDisplay(heroPosition, openerPosition);
+  updateActionButtons();
 }
 
-window.onload = generateSituation;
+function updateTableDisplay(heroPos, openerPos) {
+  for (let i = 0; i < 6; i++) {
+    const seat = document.getElementById(`seat-${i}`);
+    seat.classList.remove("hero", "opener");
+    if (i === heroPos) seat.classList.add("hero");
+    if (i === openerPos && mode === "vs_cold") seat.classList.add("opener");
+  }
+}
+
+function updateActionButtons() {
+  const container = document.getElementById("actionButtons");
+  container.innerHTML = "";
+
+  const actions = mode === "vs_open" ? ["Fold", "Raise"] : ["Fold", "Call", "3Bet"];
+
+  actions.forEach(action => {
+    const btn = document.createElement("button");
+    btn.textContent = action;
+    btn.onclick = () => showResult(action);
+    container.appendChild(btn);
+  });
+}
+
+function showResult(choice) {
+  document.getElementById("result").textContent = `You chose: ${choice}`;
+  setTimeout(showNewHand, 1500);
+}
+
+function generateRandomHand() {
+  const ranks = ["A", "K", "Q", "J", "T", "9", "8", "7", "6", "5", "4", "3", "2"];
+  const suits = ["", "s", "o"];
+  const i = Math.floor(Math.random() * ranks.length);
+  const j = Math.floor(Math.random() * ranks.length);
+
+  let hand = i < j ? `${ranks[j]}${ranks[i]}` : `${ranks[i]}${ranks[j]}`;
+  if (ranks[i] !== ranks[j]) {
+    hand += suits[Math.floor(Math.random() * 3)];
+  }
+  return hand;
+}
+
+// 初期表示
+showNewHand();
