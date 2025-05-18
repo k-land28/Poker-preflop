@@ -5,129 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Preflop Trainer</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="icon.png" type="image/png" />
+  <link rel="apple-touch-icon" href="icon.png" />
 </head>
 <body>
   <h1>Preflop Trainer</h1>
 
   <div id="tabs">
-    <button class="tab active" onclick="setMode('vs_open')">vs オープン</button>
-    <button class="tab" onclick="setMode('vs_3bet')">vs 3ベット</button>
+    <button class="tab-button active" data-mode="open_none">オープン判断</button>
+    <button class="tab-button" data-mode="vs_open">vs オープン</button>
+    <button class="tab-button" data-mode="vs_3bet">vs 3ベット</button>
   </div>
 
-  <div id="tableContainer">
-    <svg id="pokerTable" viewBox="0 0 400 200">
-      <ellipse cx="200" cy="100" rx="160" ry="70" fill="#222" stroke="#00bcd4" stroke-width="3" />
-    </svg>
-  </div>
+  <div id="table" class="table"></div>
 
-  <div id="questionArea">
-    <p id="info"></p>
-    <p id="hand"></p>
-  </div>
-
+  <p id="situationText"></p>
+  <p id="handText"></p>
   <div id="actionButtons"></div>
+  <p id="resultText"></p>
 
-  <p id="result"></p>
-  <button id="nextButton" onclick="generateSituation()">次の問題</button>
-
-  <script>
-    const positions = ["UTG", "HJ", "CO", "BTN", "SB", "BB"];
-    const hands = ["AA", "AKs", "AQs", "AJo", "KTs", "99", "88", "77", "66", "55", "A5s", "KQo"];
-    let mode = "vs_open";
-    let currentSituation = {};
-
-    const ranges = {
-      vs_open: {
-        UTG: ["AA", "AKs", "AQs", "99"],
-        HJ: ["AA", "AKs", "AQs", "AJo", "99", "KTs"],
-        CO: ["AA", "AKs", "AQs", "AJo", "KTs", "99", "88"],
-        BTN: ["AA", "AKs", "AQs", "AJo", "KTs", "99", "88", "77", "66", "55", "A5s"]
-      },
-      vs_3bet: {
-        UTG: ["AA", "KK", "AKs"],
-        HJ: ["AA", "KK", "QQ", "AKs", "AQs"],
-        CO: ["AA", "KK", "QQ", "AKs", "AQs", "JJ"],
-        BTN: ["AA", "KK", "QQ", "JJ", "TT", "AKs", "AQs", "AJs"]
-      }
-    };
-
-    function setMode(newMode) {
-      mode = newMode;
-      document.querySelectorAll(".tab").forEach(btn => btn.classList.remove("active"));
-      document.querySelectorAll(".tab").forEach(btn => {
-        if (btn.textContent.includes(mode.split("_")[1])) btn.classList.add("active");
-      });
-      generateSituation();
-    }
-
-    function generateTable(heroPos) {
-      const svg = document.getElementById("pokerTable");
-      document.querySelectorAll(".position-label").forEach(el => el.remove());
-
-      const centerX = 200;
-      const centerY = 100;
-      const rx = 140;
-      const ry = 60;
-
-      positions.forEach((pos, i) => {
-        const angle = (Math.PI * 2 / positions.length) * i - Math.PI / 2;
-        const x = centerX + rx * Math.cos(angle);
-        const y = centerY + ry * Math.sin(angle);
-
-        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        text.setAttribute("x", x);
-        text.setAttribute("y", y);
-        text.setAttribute("text-anchor", "middle");
-        text.setAttribute("alignment-baseline", "middle");
-        text.setAttribute("fill", pos === heroPos ? "#ff4081" : "#e0e0e0");
-        text.setAttribute("class", "position-label");
-        text.textContent = pos;
-        svg.appendChild(text);
-      });
-    }
-
-    function generateSituation() {
-      const heroIndex = Math.floor(Math.random() * 4);
-      const hero = positions[heroIndex];
-      const hand = hands[Math.floor(Math.random() * hands.length)];
-      currentSituation = { hero, hand };
-
-      generateTable(hero);
-
-      document.getElementById("info").innerText = `あなたのポジションは ${hero}。このハンドを${mode === "vs_open" ? "オープンレイズ" : "コール"}する？`;
-      document.getElementById("hand").innerText = `ハンド: ${hand}`;
-
-      const actionArea = document.getElementById("actionButtons");
-      actionArea.innerHTML = "";
-      document.getElementById("result").innerText = "";
-
-      if (mode === "vs_open") {
-        addActionButton("レイズ", "raise");
-        addActionButton("フォールド", "fold");
-      } else if (mode === "vs_3bet") {
-        addActionButton("コール", "call");
-        addActionButton("フォールド", "fold");
-      }
-    }
-
-    function addActionButton(label, action) {
-      const btn = document.createElement("button");
-      btn.innerText = label;
-      btn.onclick = () => checkAnswer(action);
-      document.getElementById("actionButtons").appendChild(btn);
-    }
-
-    function checkAnswer(action) {
-      const range = ranges[mode][currentSituation.hero] || [];
-      const isInRange = range.includes(currentSituation.hand);
-      const correct = (action === "raise" || action === "call") === isInRange;
-
-      document.getElementById("result").innerText = correct
-        ? "✅ 正解！"
-        : `❌ 不正解。正解は「${isInRange ? (mode === "vs_open" ? "レイズ" : "コール") : "フォールド"}」です`;
-    }
-
-    generateSituation();
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
