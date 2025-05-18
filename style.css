@@ -1,170 +1,83 @@
-/* ベーススタイル */
 body {
-  background-color: #000;
-  color: #0ff;
-  font-family: 'Consolas', monospace, 'Courier New', Courier;
+  background-color: #121212;
+  color: #e0e0e0;
+  font-family: 'Helvetica Neue', sans-serif;
   text-align: center;
+  padding: 10px;
   margin: 0;
-  padding: 20px;
-  user-select: none;
 }
 
 h1 {
-  font-size: 2.2rem;
-  margin-bottom: 25px;
-  text-shadow: 0 0 8px #0ff, 0 0 15px #0ff;
+  color: #00bcd4;
+  text-shadow: 0 0 8px rgba(0, 188, 212, 0.6);
+  margin-bottom: 10px;
 }
 
 #tabs {
-  margin-bottom: 20px;
+  margin: 10px 0;
 }
 
-.tab-button {
-  background: transparent;
-  border: 2px solid #0ff;
-  color: #0ff;
-  padding: 12px 25px;
-  margin: 0 10px;
-  font-size: 1.2rem;
+.tab {
+  background-color: #333;
+  color: #00bcd4;
+  border: 1px solid #00bcd4;
+  padding: 8px 16px;
+  margin: 0 5px;
+  border-radius: 4px;
   cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.3s, color 0.3s;
+  font-size: 0.9em;
+  transition: 0.3s;
 }
 
-.tab-button:hover {
-  background-color: #0ff;
-  color: #000;
+.tab.active {
+  background-color: #00bcd4;
+  color: #121212;
 }
 
-.tab-button.active {
-  background-color: #0ff;
-  color: #000;
-  box-shadow: 0 0 15px #0ff;
-}
-
-.table {
-  position: relative;
-  margin: 0 auto 30px auto;
-  width: 400px;
-  height: 260px;
-  border: 2px solid #0ff;
-  border-radius: 100px / 60px;
-  box-shadow: 0 0 15px #0ff;
-  background: linear-gradient(135deg, #001111, #004444);
-}
-
-.position {
-  position: absolute;
-  background: #004444cc;
-  color: #0ff;
-  padding: 8px 15px;
-  border-radius: 20px;
-  font-weight: bold;
-  box-shadow: 0 0 10px #0ff;
-  user-select: none;
-  transition: transform 0.3s;
-  cursor: default;
-  font-size: 1rem;
-  line-height: 28px;
-  white-space: nowrap;
-}
-
-#questionBox {
+#tableContainer {
+  margin: 0 auto 10px;
   max-width: 400px;
-  margin: 0 auto;
-  background: #002222cc;
-  padding: 25px;
-  border-radius: 15px;
-  box-shadow: 0 0 20px #0ffaaaff;
-  font-size: 1.2rem;
-  min-height: 150px;
 }
 
-#situationText {
-  min-height: 50px;
-  margin-bottom: 20px;
-  font-weight: 600;
-  text-shadow: 0 0 8px #0ff;
+svg {
+  width: 100%;
+  height: auto;
 }
 
-#actionButtons button {
-  background: #008888cc;
-  border: none;
-  color: #0ff;
-  padding: 12px 28px;
-  margin: 8px 15px 20px 15px;
-  font-size: 1.1rem;
-  font-weight: 700;
-  border-radius: 10px;
+#questionArea {
+  margin: 5px 0;
+  font-size: 1.1em;
+}
+
+#actionButtons {
+  margin-top: 10px;
+}
+
+button {
+  background-color: #1e1e1e;
+  border: 1px solid #00bcd4;
+  color: #00bcd4;
+  padding: 10px 20px;
+  margin: 5px;
+  border-radius: 5px;
+  font-size: 1em;
   cursor: pointer;
-  box-shadow: 0 0 10px #0ff;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
 }
 
-#actionButtons button:hover {
-  background: #00bbbb;
+button:hover {
+  background-color: #00bcd4;
+  color: #1e1e1e;
+  box-shadow: 0 0 10px #00bcd4;
 }
 
-#resultText {
-  font-size: 1.1rem;
-  font-weight: 600;
-  min-height: 30px;
-  color: #0faa00;
-  text-shadow: 0 0 12px #0faa00;
+#result {
+  margin-top: 15px;
+  font-weight: bold;
+  font-size: 1.1em;
 }
 
-/* スマホや小画面対応 */
-@media (max-width: 480px) {
-  body {
-    padding: 10px;
-    font-size: 14px;
-  }
-
-  h1 {
-    font-size: 1.6rem;
-    margin-bottom: 15px;
-  }
-
-  .table {
-    width: 280px;
-    height: 180px;
-  }
-
-  .position {
-    width: auto;
-    padding: 5px 10px;
-    font-size: 0.8rem;
-    line-height: 24px;
-  }
-
-  #tabs {
-    margin-bottom: 15px;
-  }
-
-  .tab-button {
-    margin: 0 5px;
-    padding: 8px 12px;
-    font-size: 0.9rem;
-  }
-
-  #questionBox {
-    max-width: 320px;
-    padding: 20px 15px;
-  }
-
-  #situationText {
-    font-size: 1.1rem;
-    min-height: 40px;
-  }
-
-  #actionButtons button {
-    margin: 5px 8px 12px;
-    padding: 10px 20px;
-    font-size: 1rem;
-  }
-
-  #resultText {
-    font-size: 1rem;
-    min-height: 25px;
-  }
+.position-label {
+  font-size: 12px;
+  font-weight: bold;
 }
