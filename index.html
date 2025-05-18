@@ -11,16 +11,16 @@
 
   <div id="modeButtons">
     <button id="btnOpen" class="active" onclick="setMode('vs_open')">オープン判断</button>
-    <button id="btnCold" onclick="setMode('vs_cold')">コールドアクション</button>
+    <button id="btnCold" onclick="setMode('vs_cold')">コールド対応</button>
   </div>
 
   <div id="table">
-    <div class="seat" id="seat-0">UTG</div>
-    <div class="seat" id="seat-1">MP</div>
-    <div class="seat" id="seat-2">CO</div>
-    <div class="seat" id="seat-3">BTN</div>
-    <div class="seat" id="seat-4">SB</div>
-    <div class="seat" id="seat-5">BB</div>
+    <div id="seat-0" class="seat">UTG</div>
+    <div id="seat-1" class="seat">MP</div>
+    <div id="seat-2" class="seat">CO</div>
+    <div id="seat-3" class="seat">BTN</div>
+    <div id="seat-4" class="seat">SB</div>
+    <div id="seat-5" class="seat">BB</div>
   </div>
 
   <div id="questionArea">
@@ -32,123 +32,6 @@
   <p id="result"></p>
   <button id="nextButton" onclick="generateSituation()">次の問題</button>
 
-  <script>
-    const positions = ["UTG", "MP", "CO", "BTN", "SB", "BB"];
-    const hands = ["AA", "AKs", "AQs", "AJo", "KTs", "99", "88", "77", "66", "55", "A5s", "KQo"];
-    let mode = "vs_open";
-    let currentSituation = {};
-
-    const ranges = {
-      vs_open: {
-        UTG: ["AA", "AKs", "AQs", "99"],
-        MP: ["AA", "AKs", "AQs", "AJo", "99", "KTs"],
-        CO: ["AA", "AKs", "AQs", "AJo", "KTs", "99", "88"],
-        BTN: ["AA", "AKs", "AQs", "AJo", "KTs", "99", "88", "77", "66", "55", "A5s"]
-      },
-      vs_cold: {
-        "MP_vs_UTG": { "3bet": ["AKs", "QQ"], "call": ["AQs", "99"], "fold": ["AJo", "KTs"] },
-        "CO_vs_MP": { "3bet": ["AKs", "AQs"], "call": ["AJo", "99"], "fold": ["KTs", "88"] },
-        "BTN_vs_CO": { "3bet": ["AKs", "AJs"], "call": ["ATs", "88"], "fold": ["KJo", "77"] },
-        "SB_vs_BTN": { "3bet": ["AKs", "QQ"], "call": ["AJs", "99"], "fold": ["KTs", "66"] }
-      }
-    };
-
-    function setMode(newMode) {
-      mode = newMode;
-      document.getElementById("btnOpen").classList.toggle("active", mode === "vs_open");
-      document.getElementById("btnCold").classList.toggle("active", mode === "vs_cold");
-      generateSituation();
-      document.getElementById("result").innerText = "";
-    }
-
-    function generateSituation() {
-      const actionArea = document.getElementById("actionButtons");
-      actionArea.innerHTML = "";
-      document.getElementById("result").innerText = "";
-
-      clearSeatHighlights();
-
-      if (mode === "vs_open") {
-        const hero = positions[Math.floor(Math.random() * 4)]; // UTG〜BTN
-        const hand = hands[Math.floor(Math.random() * hands.length)];
-        currentSituation = { hero, hand };
-
-        highlightSeat(hero, "hero");
-
-        document.getElementById("info").innerText = `あなたのポジションは ${hero}。このハンドをオープンレイズする？`;
-        document.getElementById("hand").innerText = `ハンド: ${hand}`;
-        addActionButton("レイズ", "raise");
-        addActionButton("フォールド", "fold");
-
-      } else if (mode === "vs_cold") {
-        const keys = Object.keys(ranges.vs_cold);
-        const selectedKey = keys[Math.floor(Math.random() * keys.length)];
-        const [hero, opener] = selectedKey.split("_vs_");
-        const hand = hands[Math.floor(Math.random() * hands.length)];
-
-        currentSituation = { hero, opener, hand };
-
-        highlightSeat(hero, "hero");
-        highlightSeat(opener, "opener");
-
-        document.getElementById("info").innerText = `${opener} がオープン。あなたは ${hero}。このハンドでどうする？`;
-        document.getElementById("hand").innerText = `ハンド: ${hand}`;
-
-        addActionButton("コール", "call");
-        addActionButton("3bet", "3bet");
-        addActionButton("フォールド", "fold");
-      }
-    }
-
-    function addActionButton(label, action) {
-      const btn = document.createElement("button");
-      btn.innerText = label;
-      btn.onclick = () => checkAnswer(action);
-      document.getElementById("actionButtons").appendChild(btn);
-    }
-
-    function checkAnswer(action) {
-      if (mode === "vs_open") {
-        const openRange = ranges.vs_open[currentSituation.hero];
-        const isRaise = openRange.includes(currentSituation.hand);
-        const correct = (action === "raise" && isRaise) || (action === "fold" && !isRaise);
-        document.getElementById("result").innerText = correct
-          ? "✅ 正解！"
-          : `❌ 不正解。正解は「${isRaise ? "レイズ" : "フォールド"}」です`;
-      } else if (mode === "vs_cold") {
-        const key = `${currentSituation.hero}_vs_${currentSituation.opener}`;
-        const rangeObj = ranges.vs_cold[key];
-
-        if (!rangeObj) {
-          document.getElementById("result").innerText = "この状況のレンジは未定義です。";
-          return;
-        }
-
-        const correctActions = Object.entries(rangeObj)
-          .filter(([k, v]) => v.includes(currentSituation.hand))
-          .map(([k]) => k);
-
-        if (correctActions.includes(action)) {
-          document.getElementById("result").innerText = "✅ 正解！";
-        } else {
-          document.getElementById("result").innerText = `❌ 不正解。正解は「${correctActions.join("、")}」です`;
-        }
-      }
-    }
-
-    function highlightSeat(position, type) {
-      const seatIndex = positions.indexOf(position);
-      const seat = document.getElementById(`seat-${seatIndex}`);
-      seat.classList.add(type);
-    }
-
-    function clearSeatHighlights() {
-      document.querySelectorAll(".seat").forEach(seat => {
-        seat.classList.remove("hero", "opener");
-      });
-    }
-
-    generateSituation();
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
