@@ -10,7 +10,7 @@ const questions = {
     { question: "Open Raise: HJ\nYour Position: BB", opener: "HJ", hero: "BB" },
   ],
   vs3bet: [
-    { question: "You Opened: HJ\n3Bet from BTN\nYour Position: HJ", opener: "HJ", hero: "HJ", vs3bet: true },
+    { question: "You Opened: HJ\n3Bet from BTN\nYour Position: HJ", opener: "BTN", hero: "HJ", vs3bet: true },
   ]
 };
 
@@ -18,16 +18,17 @@ let currentTab = "open";
 let currentQuestionIndex = 0;
 
 function updateQuestion() {
-  const question = questions[currentTab][currentQuestionIndex];
-  document.getElementById("question-text").innerText = question.question;
+  const q = questions[currentTab][currentQuestionIndex];
+  document.getElementById("question-text").innerText = q.question;
 
+  // 位置の初期化
   positions.forEach(pos => {
     const el = document.getElementById(pos);
     el.classList.remove("hero", "open");
   });
 
-  if (question.hero) document.getElementById(question.hero).classList.add("hero");
-  if (question.opener) document.getElementById(question.opener).classList.add("open");
+  if (q.hero) document.getElementById(q.hero).classList.add("hero");
+  if (q.opener) document.getElementById(q.opener).classList.add("open");
 
   const optionsContainer = document.getElementById("options-container");
   optionsContainer.innerHTML = "";
