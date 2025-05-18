@@ -2,17 +2,17 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Poker Range Trainer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Preflop Trainer</title>
   <link rel="stylesheet" href="style.css" />
-  <link rel="icon" href="icon.png" />
+  <link rel="icon" href="icon.png" type="image/png" />
 </head>
 <body>
-  <h1>🃏 Poker Range Trainer</h1>
+  <h1>Preflop Trainer</h1>
 
   <div id="modeButtons">
     <button id="btnOpen" class="active" onclick="setMode('vs_open')">オープン判断</button>
-    <button id="btnCold" onclick="setMode('vs_cold')">コールドアクション判断</button>
+    <button id="btnCold" onclick="setMode('vs_cold')">コールド対応</button>
   </div>
 
   <div id="questionArea">
@@ -23,28 +23,28 @@
   <div id="actionButtons"></div>
 
   <p id="result"></p>
-  <button id="nextButton" onclick="generateSituation()">▶ 次の問題</button>
+  <button id="nextButton" onclick="generateSituation()">次の問題</button>
 
   <script>
     const positions = ["UTG", "MP", "CO", "BTN"];
-    const hands = ["AA", "AKs", "AQs", "AJo", "KTs", "99", "88", "76s", "QJs"];
+    const hands = ["AA", "AKs", "AQs", "AJo", "KTs", "99", "88", "77", "66", "55", "A5s", "KQo"];
     let mode = "vs_open";
     let currentSituation = {};
 
     const ranges = {
       vs_open: {
-        "UTG": ["AA", "AKs", "AQs", "99"],
-        "MP": ["AA", "AKs", "AQs", "AJo", "99", "KTs"],
-        "CO": ["AA", "AKs", "AQs", "AJo", "KTs", "99", "88", "76s"],
-        "BTN": ["AA", "AKs", "AQs", "AJo", "KTs", "99", "88", "76s", "QJs"]
+        UTG: ["AA", "AKs", "AQs", "99"],
+        MP: ["AA", "AKs", "AQs", "AJo", "99", "KTs"],
+        CO: ["AA", "AKs", "AQs", "AJo", "KTs", "99", "88"],
+        BTN: ["AA", "AKs", "AQs", "AJo", "KTs", "99", "88", "77", "66", "55", "A5s"]
       },
       vs_cold: {
-        "CO_vs_UTG": {
+        CO_vs_UTG: {
           "3bet": ["AKs", "QQ", "JJ"],
           "call": ["AQs", "99"],
           "fold": ["AJo", "KTs"]
         },
-        "BTN_vs_MP": {
+        BTN_vs_MP: {
           "3bet": ["AKs", "AQs"],
           "call": ["AJo", "99"],
           "fold": ["KTs", "88"]
@@ -61,57 +61,73 @@
     }
 
     function generateSituation() {
-      const actionButtons = document.getElementById("actionButtons");
-      actionButtons.innerHTML = "";
+      const actionArea = document.getElementById("actionButtons");
+      actionArea.innerHTML = "";
+      document.getElementById("result").innerText = "";
 
       if (mode === "vs_open") {
         const hero = positions[Math.floor(Math.random() * positions.length)];
         const hand = hands[Math.floor(Math.random() * hands.length)];
         currentSituation = { hero, hand };
-        document.getElementById("info").innerText = `あなたのポジションは ${hero}。このハンドをレイズしても良い？`;
+
+        document.getElementById("info").innerText = `あなたのポジションは ${hero}。このハンドをオープンレイズする？`;
         document.getElementById("hand").innerText = `ハンド: ${hand}`;
-        createButtons(["レイズ", "フォールド"]);
-      } else {
+
+        addActionButton("レイズ", "raise");
+        addActionButton("フォールド", "fold");
+      } else if (mode === "vs_cold") {
         const openers = ["UTG", "MP"];
         const opener = openers[Math.floor(Math.random() * openers.length)];
         const openerIndex = positions.indexOf(opener);
         const heroIndex = Math.floor(Math.random() * (positions.length - openerIndex - 1)) + openerIndex + 1;
         const hero = positions[heroIndex];
         const hand = hands[Math.floor(Math.random() * hands.length)];
-        currentSituation = { opener, hero, hand };
-        document.getElementById("info").innerText = `${opener}がオープン。あなたは${hero}。このハンドで？`;
-        document.getElementById("hand").innerText = `ハンド: ${hand}`;
-        createButtons(["3bet", "コール", "フォールド"]);
-      }
 
-      document.getElementById("result").innerText = "";
+        currentSituation = { opener, hero, hand };
+
+        document.getElementById("info").innerText = `${opener} がオープン。あなたは ${hero}。このハンドでどうする？`;
+        document.getElementById("hand").innerText = `ハンド: ${hand}`;
+
+        addActionButton("コール", "call");
+        addActionButton("3bet", "3bet");
+        addActionButton("フォールド", "fold");
+      }
     }
 
-    function createButtons(labels) {
-      const container = document.getElementById("actionButtons");
-      labels.forEach(label => {
-        const btn = document.createElement("button");
-        btn.innerText = label;
-        btn.onclick = () => checkAnswer(label);
-        container.appendChild(btn);
-      });
+    function addActionButton(label, action) {
+      const btn = document.createElement("button");
+      btn.innerText = label;
+      btn.onclick = () => checkAnswer(action);
+      document.getElementById("actionButtons").appendChild(btn);
     }
 
     function checkAnswer(action) {
       if (mode === "vs_open") {
         const openRange = ranges.vs_open[currentSituation.hero];
-        if (!openRange) return;
-        const correct = (action === "レイズ" && openRange.includes(currentSituation.hand)) || (action === "フォールド" && !openRange.includes(currentSituation.hand));
-        document.getElementById("result").innerText = correct ? "✅ 正解！" : `❌ 不正解。正解は「${openRange.includes(currentSituation.hand) ? "レイズ" : "フォールド"}」`;
-      } else {
+        const isRaise = openRange.includes(currentSituation.hand);
+        const correct = (action === "raise" && isRaise) || (action === "fold" && !isRaise);
+
+        document.getElementById("result").innerText = correct
+          ? "✅ 正解！"
+          : `❌ 不正解。正解は「${isRaise ? "レイズ" : "フォールド"}」です`;
+      } else if (mode === "vs_cold") {
         const key = `${currentSituation.hero}_vs_${currentSituation.opener}`;
         const rangeObj = ranges.vs_cold[key];
+
         if (!rangeObj) {
-          document.getElementById("result").innerText = "レンジ未定義です";
+          document.getElementById("result").innerText = "この状況のレンジは未定義です。";
           return;
         }
-        const validActions = Object.keys(rangeObj).filter(k => rangeObj[k].includes(currentSituation.hand));
-        document.getElementById("result").innerText = validActions.includes(action) ? "✅ 正解！" : `❌ 不正解。正解は「${validActions.join("、")}」`;
+
+        const correctActions = Object.entries(rangeObj)
+          .filter(([k, v]) => v.includes(currentSituation.hand))
+          .map(([k]) => k);
+
+        if (correctActions.includes(action)) {
+          document.getElementById("result").innerText = "✅ 正解！";
+        } else {
+          document.getElementById("result").innerText = `❌ 不正解。正解は「${correctActions.join("、")}」です`;
+        }
       }
     }
 
