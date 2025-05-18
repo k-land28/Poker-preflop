@@ -13,6 +13,27 @@ h1 {
   margin-bottom: 10px;
 }
 
+#tabs {
+  margin: 10px 0;
+}
+
+.tab {
+  background-color: #333;
+  color: #00bcd4;
+  border: 1px solid #00bcd4;
+  padding: 8px 16px;
+  margin: 0 5px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: 0.3s;
+}
+
+.tab.active {
+  background-color: #00bcd4;
+  color: #121212;
+}
+
 #tableContainer {
   margin: 0 auto 10px;
   max-width: 400px;
@@ -24,7 +45,7 @@ svg {
 }
 
 #questionArea {
-  margin: 10px 0;
+  margin: 5px 0;
   font-size: 1.1em;
 }
 
@@ -48,11 +69,6 @@ button:hover {
   background-color: #00bcd4;
   color: #1e1e1e;
   box-shadow: 0 0 10px #00bcd4;
-}
-
-button.active {
-  background-color: #00bcd4;
-  color: #1e1e1e;
 }
 
 #result {
