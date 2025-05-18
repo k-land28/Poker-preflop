@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -7,26 +7,36 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="tab-container">
-    <button class="tab-button active" data-tab="open">Open Action</button>
-    <button class="tab-button" data-tab="cold">Cold Action</button>
-    <button class="tab-button" data-tab="vs3bet">VS 3Bet</button>
-  </div>
+  <div class="container">
+    <h1>Preflop Trainer</h1>
 
-  <div id="question-container">
-    <div id="table-container">
+    <div class="tabs">
+      <button class="tab active" data-mode="open">Open Action</button>
+      <button class="tab" data-mode="cold">Cold Action</button>
+      <button class="tab" data-mode="vs3bet">VS 3Bet</button>
+    </div>
+
+    <div class="table-container">
       <div class="poker-table">
-        <div class="position" id="UTG">UTG</div>
-        <div class="position" id="HJ">HJ</div>
-        <div class="position" id="CO">CO</div>
-        <div class="position" id="BTN">BTN</div>
-        <div class="position" id="SB">SB</div>
-        <div class="position" id="BB">BB</div>
+        <div class="position" data-pos="UTG">UTG</div>
+        <div class="position" data-pos="HJ">HJ</div>
+        <div class="position" data-pos="CO">CO</div>
+        <div class="position" data-pos="BTN">BTN</div>
+        <div class="position" data-pos="SB">SB</div>
+        <div class="position" data-pos="BB">BB</div>
       </div>
     </div>
 
-    <div id="question-text"></div>
-    <div id="options-container"></div>
+    <div class="question-area">
+      <p id="question"></p>
+      <p id="hand"></p>
+      <div class="options">
+        <button class="option-btn" data-choice="fold">Fold</button>
+        <button class="option-btn" data-choice="call">Call</button>
+        <button class="option-btn" data-choice="3bet">3Bet</button>
+      </div>
+      <p id="result"></p>
+    </div>
   </div>
 
   <script src="script.js"></script>
