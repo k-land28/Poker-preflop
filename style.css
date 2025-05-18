@@ -4,7 +4,6 @@ body {
   font-family: 'Helvetica Neue', sans-serif;
   text-align: center;
   padding: 10px;
-  margin: 0;
 }
 
 h1 {
@@ -13,51 +12,11 @@ h1 {
   margin-bottom: 10px;
 }
 
-#tabs {
-  margin: 10px 0;
-}
-
-.tab {
-  background-color: #333;
-  color: #00bcd4;
-  border: 1px solid #00bcd4;
-  padding: 8px 16px;
-  margin: 0 5px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9em;
-  transition: 0.3s;
-}
-
-.tab.active {
-  background-color: #00bcd4;
-  color: #121212;
-}
-
-#tableContainer {
-  margin: 0 auto 10px;
-  max-width: 400px;
-}
-
-svg {
-  width: 100%;
-  height: auto;
-}
-
-#questionArea {
-  margin: 5px 0;
-  font-size: 1.1em;
-}
-
-#actionButtons {
-  margin-top: 10px;
-}
-
 button {
   background-color: #1e1e1e;
   border: 1px solid #00bcd4;
   color: #00bcd4;
-  padding: 10px 20px;
+  padding: 8px 16px;
   margin: 5px;
   border-radius: 5px;
   font-size: 1em;
@@ -71,13 +30,64 @@ button:hover {
   box-shadow: 0 0 10px #00bcd4;
 }
 
+button.active {
+  background-color: #00bcd4;
+  color: #1e1e1e;
+}
+
+#table {
+  margin: 10px auto;
+  width: 300px;
+  height: 180px;
+  border: 3px solid #00bcd4;
+  border-radius: 50% / 30%;
+  position: relative;
+  background-color: #1e1e1e;
+}
+
+.seat {
+  position: absolute;
+  width: 50px;
+  height: 30px;
+  line-height: 30px;
+  background-color: #333;
+  border-radius: 15px;
+  font-size: 0.8em;
+  color: #ccc;
+  border: 1px solid #555;
+}
+
+.hero {
+  background-color: #00c853 !important;
+  color: black;
+  font-weight: bold;
+}
+
+.opener {
+  background-color: #ff9800 !important;
+  color: black;
+  font-weight: bold;
+}
+
+/* 座席の配置（楕円） */
+#seat-0 { top: 5px; left: 125px; }   /* UTG */
+#seat-1 { top: 30px; left: 220px; }  /* MP */
+#seat-2 { top: 90px; left: 240px; }  /* CO */
+#seat-3 { top: 140px; left: 125px; } /* BTN */
+#seat-4 { top: 90px; left: 10px; }   /* SB */
+#seat-5 { top: 30px; left: 30px; }   /* BB */
+
+#questionArea {
+  margin-top: 10px;
+  font-size: 1.1em;
+}
+
 #result {
   margin-top: 15px;
   font-weight: bold;
   font-size: 1.1em;
 }
 
-.position-label {
-  font-size: 12px;
-  font-weight: bold;
+#actionButtons {
+  margin-top: 10px;
 }
