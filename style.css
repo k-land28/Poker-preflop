@@ -1,16 +1,24 @@
+/* --- style.css --- */
 body {
   background-color: #121212;
   color: #e0e0e0;
   font-family: 'Helvetica Neue', sans-serif;
   text-align: center;
-  padding: 20px 10px 100px; /* 下に余白を追加して見切れ対策 */
+  padding: 20px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  box-sizing: border-box;
 }
-
 h1 {
   color: #00bcd4;
   text-shadow: 0 0 8px rgba(0, 188, 212, 0.6);
+  margin-bottom: 10px;
 }
-
+#modeButtons {
+  margin-bottom: 20px;
+}
 button {
   background-color: #1e1e1e;
   border: 1px solid #00bcd4;
@@ -22,83 +30,58 @@ button {
   cursor: pointer;
   transition: all 0.3s ease;
 }
-
 button:hover {
   background-color: #00bcd4;
   color: #1e1e1e;
   box-shadow: 0 0 10px #00bcd4;
 }
-
 button.active {
   background-color: #00bcd4;
   color: #1e1e1e;
 }
-
 #questionArea {
   margin: 20px 0;
   font-size: 1.2em;
+  min-height: 60px;
 }
-
 #result {
-  margin-top: 20px;
+  margin-top: 10px;
   font-weight: bold;
   font-size: 1.1em;
+  min-height: 24px;
 }
-
-/* テーブル表示エリア（楕円に変更） */
+#actionButtons {
+  margin-top: 15px;
+}
+/* テーブル（SVG）領域 */
+#tableContainer {
+  margin: 10px auto;
+  max-width: 100%;
+  width: 350px;
+  height: 200px; /* 横長楕円テーブル用 */
+}
 #tableSVG {
   width: 100%;
-  max-width: 350px;
-  height: 250px;
-  background-color: #2a2a2a;
-  border-radius: 50% / 30%; /* 楕円形になる指定 */
-  margin: 20px auto;
-  position: relative;
+  height: 100%;
+  display: block;
+  margin: 0 auto;
 }
-
-/* プレイヤーラベル（名前表示） */
-.player-label {
-  fill: #ffffff;
-  font-size: 14px;
-  font-weight: bold;
-  text-shadow: 0 0 5px #000;
-}
-
-/* プレイヤーサークル */
 .player-circle {
   fill: #00bcd4;
-  stroke: #ffffff;
-  stroke-width: 1;
+  stroke: #004d59;
+  stroke-width: 2;
 }
-
-/* 自分の位置（BTNなど）を目立たせる */
-.player-label.you {
-  fill: #ffeb3b;
+.player-label {
+  fill: #e0e0e0;
+  font-weight: bold;
+  font-size: 12px;
+  pointer-events: none;
+  user-select: none;
 }
-
-/* モード切り替えボタンのラッパー */
-#modeButtons {
-  margin-bottom: 20px;
-}
-
-/* 回答ボタンのラッパー */
-#actionButtons {
-  margin-top: 20px;
-}
-
-/* スマホ対応 */
-@media (max-width: 500px) {
-  #tableSVG {
-    max-width: 100%;
-    height: 200px;
-  }
-
-  button {
-    font-size: 0.9em;
-    padding: 8px 14px;
-  }
-
-  #questionArea {
-    font-size: 1em;
-  }
+/* モバイルでもボタンが見切れにくく */
+#nextButton {
+  margin-top: auto;
+  margin-bottom: 10px;
+  width: 90%;
+  max-width: 400px;
 }
