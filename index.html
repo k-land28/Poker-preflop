@@ -3,31 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>プリフロップ練習</title>
+  <title>プリフロップ練習アプリ</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="script.js" defer></script>
 </head>
 <body>
-  <h1>Preflop Trainer</h1>
-
-  <div class="mode-toggle">
-    <button id="btnOpen" class="active" onclick="setMode('vs_open')">オープン判断</button>
-    <button id="btnCold" onclick="setMode('vs_cold')">コールド対応</button>
-  </div>
-
-  <div id="info" class="info"></div>
-  <div id="hand" class="hand"></div>
+  <h1>プリフロップアクション練習</h1>
 
   <div class="table">
-    <div class="seat" id="seat-0">UTG</div>
-    <div class="seat" id="seat-1">MP</div>
-    <div class="seat" id="seat-2">CO</div>
-    <div class="seat" id="seat-3">BTN</div>
-    <div class="seat" id="seat-4">SB</div>
-    <div class="seat" id="seat-5">BB</div>
+    <div id="UTG" class="position">UTG</div>
+    <div id="HJ" class="position">HJ</div>
+    <div id="CO" class="position">CO</div>
+    <div id="BTN" class="position">BTN</div>
+    <div id="SB" class="position">SB</div>
+    <div id="BB" class="position">BB</div>
   </div>
 
-  <div id="actionButtons" class="actions"></div>
-  <div id="result" class="result"></div>
+  <div id="questionBox">
+    <p id="situationText">ここに状況が表示されます</p>
+    <div id="actionButtons"></div>
+    <p id="resultText"></p>
+    <button onclick="nextQuestion()">次の問題へ</button>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
