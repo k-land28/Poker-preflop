@@ -2,35 +2,32 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Preflop Trainer</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Preflop Trainer</h1>
-
-  <div id="modeButtons">
-    <button id="btnOpen" class="active" onclick="setMode('vs_open')">オープン判断</button>
-    <button id="btnCold" onclick="setMode('vs_cold')">コールド対応</button>
+  <div class="tab-container">
+    <button class="tab-button active" data-tab="open">Open Action</button>
+    <button class="tab-button" data-tab="cold">Cold Action</button>
+    <button class="tab-button" data-tab="vs3bet">VS 3Bet</button>
   </div>
 
-  <div id="table">
-    <div id="seat-0" class="seat">UTG</div>
-    <div id="seat-1" class="seat">MP</div>
-    <div id="seat-2" class="seat">CO</div>
-    <div id="seat-3" class="seat">BTN</div>
-    <div id="seat-4" class="seat">SB</div>
-    <div id="seat-5" class="seat">BB</div>
-  </div>
+  <div id="question-container">
+    <div id="table-container">
+      <div class="poker-table">
+        <div class="position" id="UTG">UTG</div>
+        <div class="position" id="HJ">HJ</div>
+        <div class="position" id="CO">CO</div>
+        <div class="position" id="BTN">BTN</div>
+        <div class="position" id="SB">SB</div>
+        <div class="position" id="BB">BB</div>
+      </div>
+    </div>
 
-  <div id="questionArea">
-    <p id="info"></p>
-    <p id="hand"></p>
+    <div id="question-text"></div>
+    <div id="options-container"></div>
   </div>
-
-  <div id="actionButtons"></div>
-  <p id="result"></p>
-  <button id="nextButton" onclick="generateSituation()">次の問題</button>
 
   <script src="script.js"></script>
 </body>
