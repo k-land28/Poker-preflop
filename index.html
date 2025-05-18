@@ -2,27 +2,27 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>プリフロップアクション問題</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>プリフロップアクション問題アプリ</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>プリフロップ アクション問題</h1>
+  <h1>プリフロップアクション問題アプリ</h1>
 
-  <div class="table" aria-label="ポーカーテーブル">
-    <div id="UTG" class="position">UTG</div>
-    <div id="HJ" class="position">HJ</div>
-    <div id="CO" class="position">CO</div>
-    <div id="BTN" class="position">BTN</div>
-    <div id="SB" class="position">SB</div>
-    <div id="BB" class="position">BB</div>
+  <div id="tabs">
+    <button class="tab-button active" data-mode="vs_open">vs Open</button>
+    <button class="tab-button" data-mode="vs_3bet">vs 3Bet</button>
+    <button class="tab-button" data-mode="open_none">Open None</button>
   </div>
 
-  <div id="questionBox" aria-live="polite">
+  <div class="table" id="table">
+    <!-- ポジション要素はJSで配置 -->
+  </div>
+
+  <div id="questionBox">
     <div id="situationText">ここに状況が表示されます</div>
     <div id="actionButtons"></div>
     <div id="resultText"></div>
-    <button onclick="nextQuestion()">次の問題</button>
   </div>
 
   <script src="script.js"></script>
