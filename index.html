@@ -6,9 +6,6 @@
   <title>Preflop Trainer</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="icon" href="icon.png" type="image/png" />
-  <link rel="apple-touch-icon" href="icon.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Poker Range App">
 </head>
 <body>
   <h1>Preflop Trainer</h1>
@@ -16,6 +13,10 @@
   <div id="modeButtons">
     <button id="btnOpen" class="active" onclick="setMode('vs_open')">オープン判断</button>
     <button id="btnCold" onclick="setMode('vs_cold')">コールド対応</button>
+  </div>
+
+  <div id="tableContainer">
+    <svg id="tableSVG" viewBox="0 0 300 300"></svg>
   </div>
 
   <div id="questionArea">
@@ -29,7 +30,7 @@
   <button id="nextButton" onclick="generateSituation()">次の問題</button>
 
   <script>
-    const positions = ["UTG", "MP", "CO", "BTN"];
+    const positions = ["UTG", "HJ", "CO", "BTN", "SB", "BB"];
     const hands = ["AA", "AKs", "AQs", "AJo", "KTs", "99", "88", "77", "66", "55", "A5s", "KQo"];
     let mode = "vs_open";
     let currentSituation = {};
@@ -37,7 +38,7 @@
     const ranges = {
       vs_open: {
         UTG: ["AA", "AKs", "AQs", "99"],
-        MP: ["AA", "AKs", "AQs", "AJo", "99", "KTs"],
+        HJ: ["AA", "AKs", "AQs", "AJo", "99", "KTs"],
         CO: ["AA", "AKs", "AQs", "AJo", "KTs", "99", "88"],
         BTN: ["AA", "AKs", "AQs", "AJo", "KTs", "99", "88", "77", "66", "55", "A5s"]
       },
@@ -47,7 +48,7 @@
           "call": ["AQs", "99"],
           "fold": ["AJo", "KTs"]
         },
-        BTN_vs_MP: {
+        BTN_vs_HJ: {
           "3bet": ["AKs", "AQs"],
           "call": ["AJo", "99"],
           "fold": ["KTs", "88"]
@@ -76,10 +77,12 @@
         document.getElementById("info").innerText = `あなたのポジションは ${hero}。このハンドをオープンレイズする？`;
         document.getElementById("hand").innerText = `ハンド: ${hand}`;
 
+        drawTable(hero);
+
         addActionButton("レイズ", "raise");
         addActionButton("フォールド", "fold");
       } else if (mode === "vs_cold") {
-        const openers = ["UTG", "MP"];
+        const openers = ["UTG", "HJ"];
         const opener = openers[Math.floor(Math.random() * openers.length)];
         const openerIndex = positions.indexOf(opener);
         const heroIndex = Math.floor(Math.random() * (positions.length - openerIndex - 1)) + openerIndex + 1;
@@ -90,6 +93,8 @@
 
         document.getElementById("info").innerText = `${opener} がオープン。あなたは ${hero}。このハンドでどうする？`;
         document.getElementById("hand").innerText = `ハンド: ${hand}`;
+
+        drawTable(hero, opener);
 
         addActionButton("コール", "call");
         addActionButton("3bet", "3bet");
@@ -107,7 +112,7 @@
     function checkAnswer(action) {
       if (mode === "vs_open") {
         const openRange = ranges.vs_open[currentSituation.hero];
-        const isRaise = openRange.includes(currentSituation.hand);
+        const isRaise = openRange?.includes(currentSituation.hand);
         const correct = (action === "raise" && isRaise) || (action === "fold" && !isRaise);
 
         document.getElementById("result").innerText = correct
@@ -132,6 +137,38 @@
           document.getElementById("result").innerText = `❌ 不正解。正解は「${correctActions.join("、")}」です`;
         }
       }
+    }
+
+    function drawTable(heroPos, openerPos = null) {
+      const svg = document.getElementById("tableSVG");
+      svg.innerHTML = "";
+
+      const centerX = 150;
+      const centerY = 150;
+      const radius = 100;
+
+      positions.forEach((pos, i) => {
+        const angle = (2 * Math.PI / positions.length) * i - Math.PI / 2;
+        const x = centerX + radius * Math.cos(angle);
+        const y = centerY + radius * Math.sin(angle);
+
+        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        circle.setAttribute("cx", x);
+        circle.setAttribute("cy", y);
+        circle.setAttribute("r", 25);
+        circle.setAttribute("stroke", "#00bcd4");
+        circle.setAttribute("fill", pos === heroPos ? "#00bcd4" : (pos === openerPos ? "#ff5722" : "#1e1e1e"));
+        svg.appendChild(circle);
+
+        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        text.setAttribute("x", x);
+        text.setAttribute("y", y + 5);
+        text.setAttribute("text-anchor", "middle");
+        text.setAttribute("fill", "#ffffff");
+        text.setAttribute("font-size", "12");
+        text.textContent = pos;
+        svg.appendChild(text);
+      });
     }
 
     generateSituation();
