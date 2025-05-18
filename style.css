@@ -1,124 +1,170 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
-
+/* ベーススタイル */
 body {
-  font-family: 'Orbitron', sans-serif;
   background-color: #000;
-  color: #00fff7;
+  color: #0ff;
+  font-family: 'Consolas', monospace, 'Courier New', Courier;
   text-align: center;
+  margin: 0;
   padding: 20px;
   user-select: none;
-  min-height: 100vh;
 }
 
 h1 {
-  text-shadow: 0 0 10px #00fff7;
-  margin-bottom: 30px;
+  font-size: 2.2rem;
+  margin-bottom: 25px;
+  text-shadow: 0 0 8px #0ff, 0 0 15px #0ff;
+}
+
+#tabs {
+  margin-bottom: 20px;
+}
+
+.tab-button {
+  background: transparent;
+  border: 2px solid #0ff;
+  color: #0ff;
+  padding: 12px 25px;
+  margin: 0 10px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.tab-button:hover {
+  background-color: #0ff;
+  color: #000;
+}
+
+.tab-button.active {
+  background-color: #0ff;
+  color: #000;
+  box-shadow: 0 0 15px #0ff;
 }
 
 .table {
-  width: 400px;
-  height: 250px;
-  margin: 0 auto 30px;
-  border-radius: 50% / 30%;
   position: relative;
-  background: linear-gradient(135deg, #001f3f 0%, #003366 100%);
-  box-shadow: 0 0 40px #0077ff inset;
-  border: 2px solid #00aaff;
+  margin: 0 auto 30px auto;
+  width: 400px;
+  height: 260px;
+  border: 2px solid #0ff;
+  border-radius: 100px / 60px;
+  box-shadow: 0 0 15px #0ff;
+  background: linear-gradient(135deg, #001111, #004444);
 }
 
 .position {
   position: absolute;
-  width: 60px;
-  height: 35px;
-  line-height: 35px;
-  border-radius: 12px;
-  text-align: center;
-  color: #00fff7;
-  font-weight: 700;
-  font-size: 1rem;
-  text-shadow:
-    0 0 8px #00fff7,
-    0 0 15px #00e0ff,
-    0 0 20px #00c0ff;
-  border: 2px solid #00e0ff;
-  background: rgba(0, 255, 255, 0.1);
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  cursor: default;
+  background: #004444cc;
+  color: #0ff;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-weight: bold;
+  box-shadow: 0 0 10px #0ff;
   user-select: none;
-}
-
-.position:hover {
-  background: rgba(0, 255, 255, 0.3);
-  box-shadow:
-    0 0 12px #00fff7,
-    0 0 20px #00e0ff,
-    0 0 30px #00c0ff;
+  transition: transform 0.3s;
+  cursor: default;
+  font-size: 1rem;
+  line-height: 28px;
+  white-space: nowrap;
 }
 
 #questionBox {
-  max-width: 500px;
+  max-width: 400px;
   margin: 0 auto;
-  background: #001a26;
-  padding: 25px 30px;
+  background: #002222cc;
+  padding: 25px;
   border-radius: 15px;
-  box-shadow:
-    0 0 15px #0099ff,
-    inset 0 0 20px #003366;
-  user-select: none;
+  box-shadow: 0 0 20px #0ffaaaff;
+  font-size: 1.2rem;
+  min-height: 150px;
 }
 
 #situationText {
-  font-size: 1.3rem;
-  margin-bottom: 25px;
-  text-shadow: 0 0 8px #00fff7;
   min-height: 50px;
+  margin-bottom: 20px;
+  font-weight: 600;
+  text-shadow: 0 0 8px #0ff;
 }
 
 #actionButtons button {
-  margin: 0 10px 15px;
+  background: #008888cc;
+  border: none;
+  color: #0ff;
   padding: 12px 28px;
+  margin: 8px 15px 20px 15px;
   font-size: 1.1rem;
   font-weight: 700;
-  border: none;
   border-radius: 10px;
-  background: linear-gradient(145deg, #5500ff, #9900ff);
-  color: #e0e0ff;
-  box-shadow:
-    0 0 8px #aa00ff,
-    0 0 15px #bb00ff,
-    0 0 20px #cc00ff;
   cursor: pointer;
-  transition: background 0.3s ease, box-shadow 0.3s ease;
-  user-select: none;
+  box-shadow: 0 0 10px #0ff;
+  transition: background-color 0.3s;
 }
 
 #actionButtons button:hover {
-  background: linear-gradient(145deg, #aa00ff, #ff00ff);
-  box-shadow:
-    0 0 12px #ff00ff,
-    0 0 25px #ff00ff,
-    0 0 30px #ff00ff;
+  background: #00bbbb;
 }
 
 #resultText {
-  font-size: 1.2rem;
-  margin-top: 15px;
-  font-weight: 700;
-  text-shadow: 0 0 15px #ff00ff;
+  font-size: 1.1rem;
+  font-weight: 600;
   min-height: 30px;
+  color: #0faa00;
+  text-shadow: 0 0 12px #0faa00;
 }
 
-button[onclick="nextQuestion()"] {
-  margin-top: 25px;
-  background: linear-gradient(145deg, #0055ff, #00bbff);
-  box-shadow:
-    0 0 10px #00bbff,
-    0 0 25px #00bbff;
-}
+/* スマホや小画面対応 */
+@media (max-width: 480px) {
+  body {
+    padding: 10px;
+    font-size: 14px;
+  }
 
-button[onclick="nextQuestion()"]:hover {
-  background: linear-gradient(145deg, #00aaff, #00ffff);
-  box-shadow:
-    0 0 15px #00ffff,
-    0 0 30px #00ffff;
+  h1 {
+    font-size: 1.6rem;
+    margin-bottom: 15px;
+  }
+
+  .table {
+    width: 280px;
+    height: 180px;
+  }
+
+  .position {
+    width: auto;
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    line-height: 24px;
+  }
+
+  #tabs {
+    margin-bottom: 15px;
+  }
+
+  .tab-button {
+    margin: 0 5px;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
+
+  #questionBox {
+    max-width: 320px;
+    padding: 20px 15px;
+  }
+
+  #situationText {
+    font-size: 1.1rem;
+    min-height: 40px;
+  }
+
+  #actionButtons button {
+    margin: 5px 8px 12px;
+    padding: 10px 20px;
+    font-size: 1rem;
+  }
+
+  #resultText {
+    font-size: 1rem;
+    min-height: 25px;
+  }
 }
