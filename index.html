@@ -1,44 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Preflop Trainer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>プリフロップ練習</title>
   <link rel="stylesheet" href="style.css" />
+  <script src="script.js" defer></script>
 </head>
 <body>
-  <div class="container">
-    <h1>Preflop Trainer</h1>
+  <h1>Preflop Trainer</h1>
 
-    <div class="tabs">
-      <button class="tab active" data-mode="open">Open Action</button>
-      <button class="tab" data-mode="cold">Cold Action</button>
-      <button class="tab" data-mode="vs3bet">VS 3Bet</button>
-    </div>
-
-    <div class="table-container">
-      <div class="poker-table">
-        <div class="position" data-pos="UTG">UTG</div>
-        <div class="position" data-pos="HJ">HJ</div>
-        <div class="position" data-pos="CO">CO</div>
-        <div class="position" data-pos="BTN">BTN</div>
-        <div class="position" data-pos="SB">SB</div>
-        <div class="position" data-pos="BB">BB</div>
-      </div>
-    </div>
-
-    <div class="question-area">
-      <p id="question"></p>
-      <p id="hand"></p>
-      <div class="options">
-        <button class="option-btn" data-choice="fold">Fold</button>
-        <button class="option-btn" data-choice="call">Call</button>
-        <button class="option-btn" data-choice="3bet">3Bet</button>
-      </div>
-      <p id="result"></p>
-    </div>
+  <div class="mode-toggle">
+    <button id="btnOpen" class="active" onclick="setMode('vs_open')">オープン判断</button>
+    <button id="btnCold" onclick="setMode('vs_cold')">コールド対応</button>
   </div>
 
-  <script src="script.js"></script>
+  <div id="info" class="info"></div>
+  <div id="hand" class="hand"></div>
+
+  <div class="table">
+    <div class="seat" id="seat-0">UTG</div>
+    <div class="seat" id="seat-1">MP</div>
+    <div class="seat" id="seat-2">CO</div>
+    <div class="seat" id="seat-3">BTN</div>
+    <div class="seat" id="seat-4">SB</div>
+    <div class="seat" id="seat-5">BB</div>
+  </div>
+
+  <div id="actionButtons" class="actions"></div>
+  <div id="result" class="result"></div>
 </body>
 </html>
