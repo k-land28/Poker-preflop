@@ -3,17 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ポーカー プリフロップレンジチェック</title>
+  <title>プリフロップ練習</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="プリフロップ練習" />
+  <link rel="apple-touch-icon" href="icon.png" />
   <style>
     body {
-      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: #fff;
+      font-family: 'Arial', sans-serif;
       padding: 20px;
       max-width: 600px;
       margin: auto;
-      background-color: #121212;
-      color: #e0e0e0;
     }
-
     button {
       margin: 5px;
       padding: 10px 15px;
@@ -24,37 +26,29 @@
       border: 1px solid #555;
       border-radius: 5px;
     }
-
-    button:hover {
-      background-color: #555;
-    }
-
     #modeButtons button.active {
       background-color: #4CAF50;
       color: white;
     }
-
     #result {
       margin-top: 20px;
       font-size: 20px;
     }
-
     #info {
       margin: 15px 0;
       font-weight: bold;
     }
-
-    #actionButtons {
+    .action-buttons {
       margin-top: 10px;
     }
   </style>
 </head>
 <body>
-  <h1>ポーカー プリフロップレンジチェック</h1>
+  <h1>ポーカー プリフロップ練習</h1>
 
   <div id="modeButtons">
-    <button id="btnOpen" class="active" onclick="setMode('vs_open')">オープンレンジ確認</button>
-    <button id="btn3bet" onclick="setMode('vs_3bet')">3bet対応確認</button>
+    <button id="btnOpen" class="active" onclick="setMode('vs_open')">オープン練習</button>
+    <button id="btn3bet" onclick="setMode('vs_3bet')">3bet対応</button>
   </div>
 
   <div id="questionArea">
@@ -62,33 +56,45 @@
     <p id="hand"></p>
   </div>
 
-  <div id="actionButtons">
-    <!-- アクションボタンがここに動的に追加されます -->
-  </div>
+  <div class="action-buttons" id="actionButtons"></div>
 
   <p id="result"></p>
   <button onclick="generateSituation()">次の問題</button>
 
   <script>
     const positions = ["UTG", "MP", "CO", "BTN"];
-    const hands = ["AA", "AKs", "AQs", "AJo", "KTs", "99"]; // 簡易サンプル
+    const modeButtons = {
+      vs_open: ["レイズ", "フォールド"],
+      vs_3bet: ["3bet", "コール", "フォールド"]
+    };
 
-    let mode = "vs_open";
+    const handsToAsk = {
+      vs_open: {
+        UTG: ["AQs", "99", "AJo"],
+        MP: ["AJo", "KTs", "88"],
+        CO: ["KTs", "88", "77"],
+        BTN: ["77", "66", "55"]
+      },
+      vs_3bet: {
+        CO_vs_UTG: ["AQs", "99", "AJo", "KTs"],
+        BTN_vs_MP: ["AJo", "99", "KTs", "88"]
+      }
+    };
 
     const ranges = {
       vs_open: {
-        "UTG": ["AA", "AKs", "AQs", "99"],
-        "MP": ["AA", "AKs", "AQs", "AJo", "99", "KTs"],
-        "CO": ["AA", "AKs", "AQs", "AJo", "KTs", "99", "88"],
-        "BTN": ["AA", "AKs", "AQs", "AJo", "KTs", "99", "88", "77"]
+        UTG: ["AA", "AKs", "AQs", "99"],
+        MP: ["AA", "AKs", "AQs", "AJo", "99", "KTs"],
+        CO: ["AA", "AKs", "AQs", "AJo", "KTs", "99", "88"],
+        BTN: ["AA", "AKs", "AQs", "AJo", "KTs", "99", "88", "77"]
       },
       vs_3bet: {
-        "CO_vs_UTG": {
+        CO_vs_UTG: {
           "3bet": ["AKs", "QQ", "JJ"],
           "call": ["AQs", "99"],
           "fold": ["AJo", "KTs"]
         },
-        "BTN_vs_MP": {
+        BTN_vs_MP: {
           "3bet": ["AKs", "AQs"],
           "call": ["AJo", "99"],
           "fold": ["KTs", "88"]
@@ -96,6 +102,7 @@
       }
     };
 
+    let mode = "vs_open";
     let currentSituation = {};
 
     function setMode(newMode) {
@@ -107,19 +114,24 @@
     }
 
     function generateSituation() {
-      const actionButtons = document.getElementById("actionButtons");
-      actionButtons.innerHTML = ""; // 一旦クリア
+      const actionArea = document.getElementById("actionButtons");
+      actionArea.innerHTML = "";
 
       if (mode === "vs_open") {
         const hero = positions[Math.floor(Math.random() * positions.length)];
-        const hand = hands[Math.floor(Math.random() * hands.length)];
+        const handList = handsToAsk.vs_open[hero];
+        const hand = handList[Math.floor(Math.random() * handList.length)];
         currentSituation = { hero, hand };
 
-        document.getElementById("info").innerText = `あなたのポジションは${hero}です。このハンドをオープンすべきか？`;
+        document.getElementById("info").innerText = `あなたのポジションは${hero}です。このハンドをレイズしますか？`;
         document.getElementById("hand").innerText = `ハンド: ${hand}`;
 
-        addButton("レイズ", "3bet");
-        addButton("フォールド", "fold");
+        modeButtons.vs_open.forEach(action => {
+          const btn = document.createElement("button");
+          btn.innerText = action;
+          btn.onclick = () => checkAnswer(action);
+          actionArea.appendChild(btn);
+        });
 
       } else if (mode === "vs_3bet") {
         const openers = ["UTG", "MP"];
@@ -127,42 +139,32 @@
         const openerIndex = positions.indexOf(opener);
         const heroIndex = Math.floor(Math.random() * (positions.length - openerIndex - 1)) + openerIndex + 1;
         const hero = positions[heroIndex];
-        const hand = hands[Math.floor(Math.random() * hands.length)];
-
+        const key = `${hero}_vs_${opener}`;
+        const handList = handsToAsk.vs_3bet[key];
+        const hand = handList[Math.floor(Math.random() * handList.length)];
         currentSituation = { opener, hero, hand };
 
-        document.getElementById("info").innerText = `${opener}がオープンしています。あなたは${hero}。このハンドでどうする？`;
+        document.getElementById("info").innerText = `${opener}がオープンしています。あなたは${hero}。このハンドでどうしますか？`;
         document.getElementById("hand").innerText = `ハンド: ${hand}`;
 
-        addButton("3bet", "3bet");
-        addButton("コール", "call");
-        addButton("フォールド", "fold");
+        modeButtons.vs_3bet.forEach(action => {
+          const btn = document.createElement("button");
+          btn.innerText = action;
+          btn.onclick = () => checkAnswer(action);
+          actionArea.appendChild(btn);
+        });
       }
-
       document.getElementById("result").innerText = "";
     }
 
-    function addButton(label, action) {
-      const btn = document.createElement("button");
-      btn.innerText = label;
-      btn.onclick = () => checkAnswer(action);
-      document.getElementById("actionButtons").appendChild(btn);
-    }
-
     function checkAnswer(action) {
-      let correct;
       if (mode === "vs_open") {
         const openRange = ranges.vs_open[currentSituation.hero];
-        if (!openRange) {
-          document.getElementById("result").innerText = "そのポジションのレンジは未定義です";
-          return;
-        }
-        if (action === "call") {
-          document.getElementById("result").innerText = "このモードでは『コール』は使いません。";
-          return;
-        }
-        correct = (action === "3bet" && openRange.includes(currentSituation.hand)) || (action === "fold" && !openRange.includes(currentSituation.hand));
-        document.getElementById("result").innerText = correct ? "✅ 正解！" : `❌ 不正解。正解は「${openRange.includes(currentSituation.hand) ? "レイズ" : "フォールド"}」です`;
+        const isInRange = openRange.includes(currentSituation.hand);
+        const correct = (action === "レイズ" && isInRange) || (action === "フォールド" && !isInRange);
+        document.getElementById("result").innerText = correct
+          ? "✅ 正解！"
+          : `❌ 不正解。正解は「${isInRange ? "レイズ" : "フォールド"}」です`;
       } else if (mode === "vs_3bet") {
         const key = `${currentSituation.hero}_vs_${currentSituation.opener}`;
         const rangeObj = ranges.vs_3bet[key];
@@ -170,10 +172,18 @@
           document.getElementById("result").innerText = "この状況のレンジが未定義です";
           return;
         }
-        if (rangeObj[action] && rangeObj[action].includes(currentSituation.hand)) {
+        const answerMap = { "3bet": "3bet", "コール": "call", "フォールド": "fold" };
+        const correctActions = Object.entries(rangeObj)
+          .filter(([k, v]) => v.includes(currentSituation.hand))
+          .map(([k]) => {
+            if (k === "call") return "コール";
+            if (k === "fold") return "フォールド";
+            return "3bet";
+          });
+
+        if (rangeObj[answerMap[action]] && rangeObj[answerMap[action]].includes(currentSituation.hand)) {
           document.getElementById("result").innerText = "✅ 正解！";
         } else {
-          const correctActions = Object.keys(rangeObj).filter(k => rangeObj[k].includes(currentSituation.hand));
           document.getElementById("result").innerText = `❌ 不正解。正解は「${correctActions.join("、")}」です`;
         }
       }
