@@ -2,8 +2,8 @@ let mode = "vs_open"; // デフォルトはオープン判断モード
 const positions = ["UTG", "MP", "CO", "BTN", "SB", "BB"];
 const hands = ["AA", "KK", "QQ", "JJ", "TT", "AKs", "AQs", "AJs", "KQs", "AKo", "AQo", "AJo", "KQo"];
 const actions = {
-  vs_open: ["フォールド", "オープン"],
-  vs_cold: ["フォールド", "コール", "スリーベット"]
+  vs_open: ["Fold", "Raise"],
+  vs_cold: ["Fold", "Call", "3bet"]
 };
 
 function setMode(selectedMode) {
