@@ -12,11 +12,11 @@ h1 {
   margin-bottom: 10px;
 }
 
-.mode-toggle button {
+button {
   background-color: #1e1e1e;
   border: 1px solid #00bcd4;
   color: #00bcd4;
-  padding: 10px 20px;
+  padding: 8px 16px;
   margin: 5px;
   border-radius: 5px;
   font-size: 1em;
@@ -24,84 +24,74 @@ h1 {
   transition: all 0.3s ease;
 }
 
-.mode-toggle button.active,
-.mode-toggle button:hover {
+button:hover {
   background-color: #00bcd4;
   color: #1e1e1e;
   box-shadow: 0 0 10px #00bcd4;
 }
 
-.info, .hand {
-  font-size: 1.2em;
-  margin: 8px 0;
-}
-
-.table {
-  position: relative;
-  width: 300px;
-  height: 180px;
-  margin: 10px auto;
-  background-color: #2c2c2c;
-  border-radius: 50% / 30%;
-  border: 2px solid #00bcd4;
-}
-
-.seat {
-  position: absolute;
-  width: 60px;
-  height: 30px;
-  background-color: #444;
-  color: #e0e0e0;
-  border-radius: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.9em;
-  transition: all 0.3s ease;
-}
-
-/* 座標（6-max用楕円上の等間隔配置） */
-#seat-0 { top: 10px; left: 120px; }  /* UTG */
-#seat-1 { top: 40px; left: 220px; }  /* MP */
-#seat-2 { top: 110px; left: 220px; } /* CO */
-#seat-3 { top: 140px; left: 120px; } /* BTN */
-#seat-4 { top: 110px; left: 20px; }  /* SB */
-#seat-5 { top: 40px; left: 20px; }   /* BB */
-
-.seat.hero {
-  background-color: #00bcd4;
-  color: #121212;
-  font-weight: bold;
-  transform: scale(1.2);
-}
-
-.seat.opener {
-  border: 2px solid #00bcd4;
-}
-
-.actions {
-  margin-top: 20px;
-}
-
-.actions button {
-  background-color: #1e1e1e;
-  border: 1px solid #00bcd4;
-  color: #00bcd4;
-  padding: 10px 20px;
-  margin: 5px;
-  border-radius: 5px;
-  font-size: 1em;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.actions button:hover {
+button.active {
   background-color: #00bcd4;
   color: #1e1e1e;
 }
 
-.result {
-  margin-top: 20px;
+#table {
+  margin: 20px auto 10px auto;
+  width: 90vw;
+  max-width: 400px;
+  height: 200px;
+  background-color: #1e1e1e;
+  border: 3px solid #00bcd4;
+  border-radius: 50% / 35%;
+  position: relative;
+}
+
+/* 座席 */
+.seat {
+  position: absolute;
+  width: 50px;
+  height: 30px;
+  line-height: 30px;
+  background-color: #333;
+  border-radius: 15px;
+  font-size: 0.8em;
+  color: #ccc;
+  border: 1px solid #555;
+  text-align: center;
+}
+
+/* ポジションごとの座標配置 */
+#seat-0 { top: 0%;   left: 50%; transform: translate(-50%, -50%); } /* UTG */
+#seat-1 { top: 20%;  left: 90%; transform: translate(-50%, -50%); } /* MP */
+#seat-2 { top: 70%;  left: 90%; transform: translate(-50%, -50%); } /* CO */
+#seat-3 { top: 100%; left: 50%; transform: translate(-50%, -50%); } /* BTN */
+#seat-4 { top: 70%;  left: 10%; transform: translate(-50%, -50%); } /* SB */
+#seat-5 { top: 20%;  left: 10%; transform: translate(-50%, -50%); } /* BB */
+
+/* ハイライト */
+.hero {
+  background-color: #00c853 !important;
+  color: black;
+  font-weight: bold;
+}
+
+.opener {
+  background-color: #ff9800 !important;
+  color: black;
+  font-weight: bold;
+}
+
+#questionArea {
+  margin-top: 10px;
+  font-size: 1.1em;
+}
+
+#result {
+  margin-top: 15px;
   font-weight: bold;
   font-size: 1.1em;
+}
+
+#actionButtons {
+  margin-top: 10px;
 }
