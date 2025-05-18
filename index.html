@@ -2,14 +2,14 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>プリフロップ練習アプリ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>プリフロップアクション問題</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>プリフロップアクション練習</h1>
+  <h1>プリフロップ アクション問題</h1>
 
-  <div class="table">
+  <div class="table" aria-label="ポーカーテーブル">
     <div id="UTG" class="position">UTG</div>
     <div id="HJ" class="position">HJ</div>
     <div id="CO" class="position">CO</div>
@@ -18,11 +18,11 @@
     <div id="BB" class="position">BB</div>
   </div>
 
-  <div id="questionBox">
-    <p id="situationText">ここに状況が表示されます</p>
+  <div id="questionBox" aria-live="polite">
+    <div id="situationText">ここに状況が表示されます</div>
     <div id="actionButtons"></div>
-    <p id="resultText"></p>
-    <button onclick="nextQuestion()">次の問題へ</button>
+    <div id="resultText"></div>
+    <button onclick="nextQuestion()">次の問題</button>
   </div>
 
   <script src="script.js"></script>
