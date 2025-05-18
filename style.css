@@ -1,73 +1,46 @@
 body {
   background-color: #121212;
-  color: #f5f5f5;
-  font-family: 'Segoe UI', sans-serif;
+  color: #e0e0e0;
+  font-family: 'Helvetica Neue', sans-serif;
+  text-align: center;
   padding: 20px;
-  max-width: 700px;
-  margin: auto;
 }
 
 h1 {
-  text-align: center;
-  margin-bottom: 30px;
-  color: #00ffcc;
-  text-shadow: 1px 1px 5px #00ffcc66;
+  color: #00bcd4;
+  text-shadow: 0 0 8px rgba(0, 188, 212, 0.6);
 }
 
 button {
-  background-color: #222;
-  color: #eee;
-  border: 1px solid #555;
+  background-color: #1e1e1e;
+  border: 1px solid #00bcd4;
+  color: #00bcd4;
   padding: 10px 20px;
-  margin: 8px;
-  border-radius: 8px;
-  font-size: 16px;
-  transition: all 0.2s ease;
+  margin: 5px;
+  border-radius: 5px;
+  font-size: 1em;
   cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 button:hover {
-  background-color: #333;
-  box-shadow: 0 0 10px #00ffc855;
-  transform: scale(1.05);
+  background-color: #00bcd4;
+  color: #1e1e1e;
+  box-shadow: 0 0 10px #00bcd4;
 }
 
-button:active {
-  background-color: #555;
-  transform: scale(0.98);
-}
-
-#modeButtons button.active {
-  background-color: #00ffcc;
-  color: black;
-  font-weight: bold;
-  box-shadow: 0 0 10px #00ffc8;
+button.active {
+  background-color: #00bcd4;
+  color: #1e1e1e;
 }
 
 #questionArea {
-  margin-top: 20px;
-  font-size: 18px;
-}
-
-#hand {
-  font-size: 24px;
-  font-weight: bold;
-  margin-top: 10px;
+  margin: 20px 0;
+  font-size: 1.2em;
 }
 
 #result {
   margin-top: 20px;
-  font-size: 20px;
-}
-
-#nextButton {
-  margin-top: 20px;
-  background-color: #00ffcc;
-  color: black;
   font-weight: bold;
-  border: none;
-}
-
-#actionButtons {
-  margin-top: 20px;
+  font-size: 1.1em;
 }
