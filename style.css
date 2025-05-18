@@ -1,119 +1,107 @@
 body {
-  margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background-color: #0d1117;
-  color: #c9d1d9;
-}
-
-.container {
-  max-width: 800px;
-  margin: auto;
-  padding: 20px;
+  background-color: #121212;
+  color: #e0e0e0;
+  font-family: 'Helvetica Neue', sans-serif;
+  text-align: center;
+  padding: 10px;
 }
 
 h1 {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.tabs {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-.tab {
-  padding: 10px 20px;
-  background-color: #21262d;
-  border: 1px solid #30363d;
-  cursor: pointer;
-  color: #c9d1d9;
-  margin: 0 5px;
-  border-radius: 5px;
-}
-
-.tab.active {
-  background-color: #58a6ff;
-  color: #fff;
-}
-
-.table-container {
-  display: flex;
-  justify-content: center;
+  color: #00bcd4;
+  text-shadow: 0 0 8px rgba(0, 188, 212, 0.6);
   margin-bottom: 10px;
 }
 
-.poker-table {
+.mode-toggle button {
+  background-color: #1e1e1e;
+  border: 1px solid #00bcd4;
+  color: #00bcd4;
+  padding: 10px 20px;
+  margin: 5px;
+  border-radius: 5px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.mode-toggle button.active,
+.mode-toggle button:hover {
+  background-color: #00bcd4;
+  color: #1e1e1e;
+  box-shadow: 0 0 10px #00bcd4;
+}
+
+.info, .hand {
+  font-size: 1.2em;
+  margin: 8px 0;
+}
+
+.table {
+  position: relative;
   width: 300px;
   height: 180px;
-  background: #1f6feb;
+  margin: 10px auto;
+  background-color: #2c2c2c;
   border-radius: 50% / 30%;
-  position: relative;
-  margin-bottom: 10px;
+  border: 2px solid #00bcd4;
 }
 
-.position {
+.seat {
   position: absolute;
   width: 60px;
-  height: 40px;
-  background-color: #30363d;
-  color: white;
-  text-align: center;
-  line-height: 40px;
-  border-radius: 10px;
-  font-size: 14px;
-  transform: translate(-50%, -50%);
-}
-
-.position.highlight-open {
-  background-color: #ff9800;
-}
-
-.position.highlight-self {
-  background-color: #00e676;
-  font-size: 18px;
-  font-weight: bold;
-  transform: translate(-50%, -50%) scale(1.2);
-}
-
-.question-area {
-  text-align: center;
-}
-
-#question {
-  font-size: 18px;
-  margin-bottom: 5px;
-}
-
-#hand {
-  font-size: 20px;
-  font-weight: bold;
-  margin-bottom: 15px;
-}
-
-.options {
+  height: 30px;
+  background-color: #444;
+  color: #e0e0e0;
+  border-radius: 15px;
   display: flex;
+  align-items: center;
   justify-content: center;
-  gap: 15px;
-  margin-bottom: 10px;
+  font-size: 0.9em;
+  transition: all 0.3s ease;
 }
 
-.option-btn {
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: #238636;
-  border: none;
-  border-radius: 8px;
-  color: white;
-  cursor: pointer;
-}
+/* 座標（6-max用楕円上の等間隔配置） */
+#seat-0 { top: 10px; left: 120px; }  /* UTG */
+#seat-1 { top: 40px; left: 220px; }  /* MP */
+#seat-2 { top: 110px; left: 220px; } /* CO */
+#seat-3 { top: 140px; left: 120px; } /* BTN */
+#seat-4 { top: 110px; left: 20px; }  /* SB */
+#seat-5 { top: 40px; left: 20px; }   /* BB */
 
-.option-btn:hover {
-  background-color: #2ea043;
-}
-
-#result {
-  font-size: 18px;
+.seat.hero {
+  background-color: #00bcd4;
+  color: #121212;
   font-weight: bold;
-  margin-top: 10px;
+  transform: scale(1.2);
+}
+
+.seat.opener {
+  border: 2px solid #00bcd4;
+}
+
+.actions {
+  margin-top: 20px;
+}
+
+.actions button {
+  background-color: #1e1e1e;
+  border: 1px solid #00bcd4;
+  color: #00bcd4;
+  padding: 10px 20px;
+  margin: 5px;
+  border-radius: 5px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.actions button:hover {
+  background-color: #00bcd4;
+  color: #1e1e1e;
+}
+
+.result {
+  margin-top: 20px;
+  font-weight: bold;
+  font-size: 1.1em;
 }
