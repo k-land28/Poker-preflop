@@ -10,17 +10,22 @@ body {
 
 #tabs {
   margin-bottom: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 .tab-button {
   padding: 0.5rem 1rem;
-  margin: 0 0.5rem;
   font-size: 1rem;
   border: none;
   background-color: #333;
   color: #fff;
   cursor: pointer;
   border-radius: 6px;
+  flex: 1 1 100px;
+  max-width: 140px;
 }
 
 .tab-button.active {
