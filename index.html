@@ -9,15 +9,18 @@
 <body>
   <h1>Preflop Trainer</h1>
 
-  <div id="tabs">
-    <button class="tab active" onclick="setMode('vs_open')">vs オープン</button>
-    <button class="tab" onclick="setMode('vs_3bet')">vs 3ベット</button>
+  <div id="modeButtons">
+    <button id="btnOpen" class="active" onclick="setMode('vs_open')">オープン判断</button>
+    <button id="btnCold" onclick="setMode('vs_cold')">コールドアクション</button>
   </div>
 
-  <div id="tableContainer">
-    <svg id="pokerTable" viewBox="0 0 400 200">
-      <ellipse cx="200" cy="100" rx="160" ry="70" fill="#222" stroke="#00bcd4" stroke-width="3" />
-    </svg>
+  <div id="table">
+    <div class="seat" id="seat-0">UTG</div>
+    <div class="seat" id="seat-1">MP</div>
+    <div class="seat" id="seat-2">CO</div>
+    <div class="seat" id="seat-3">BTN</div>
+    <div class="seat" id="seat-4">SB</div>
+    <div class="seat" id="seat-5">BB</div>
   </div>
 
   <div id="questionArea">
@@ -26,12 +29,11 @@
   </div>
 
   <div id="actionButtons"></div>
-
   <p id="result"></p>
   <button id="nextButton" onclick="generateSituation()">次の問題</button>
 
   <script>
-    const positions = ["UTG", "HJ", "CO", "BTN", "SB", "BB"];
+    const positions = ["UTG", "MP", "CO", "BTN", "SB", "BB"];
     const hands = ["AA", "AKs", "AQs", "AJo", "KTs", "99", "88", "77", "66", "55", "A5s", "KQo"];
     let mode = "vs_open";
     let currentSituation = {};
@@ -39,73 +41,61 @@
     const ranges = {
       vs_open: {
         UTG: ["AA", "AKs", "AQs", "99"],
-        HJ: ["AA", "AKs", "AQs", "AJo", "99", "KTs"],
+        MP: ["AA", "AKs", "AQs", "AJo", "99", "KTs"],
         CO: ["AA", "AKs", "AQs", "AJo", "KTs", "99", "88"],
         BTN: ["AA", "AKs", "AQs", "AJo", "KTs", "99", "88", "77", "66", "55", "A5s"]
       },
-      vs_3bet: {
-        UTG: ["AA", "KK", "AKs"],
-        HJ: ["AA", "KK", "QQ", "AKs", "AQs"],
-        CO: ["AA", "KK", "QQ", "AKs", "AQs", "JJ"],
-        BTN: ["AA", "KK", "QQ", "JJ", "TT", "AKs", "AQs", "AJs"]
+      vs_cold: {
+        "MP_vs_UTG": { "3bet": ["AKs", "QQ"], "call": ["AQs", "99"], "fold": ["AJo", "KTs"] },
+        "CO_vs_MP": { "3bet": ["AKs", "AQs"], "call": ["AJo", "99"], "fold": ["KTs", "88"] },
+        "BTN_vs_CO": { "3bet": ["AKs", "AJs"], "call": ["ATs", "88"], "fold": ["KJo", "77"] },
+        "SB_vs_BTN": { "3bet": ["AKs", "QQ"], "call": ["AJs", "99"], "fold": ["KTs", "66"] }
       }
     };
 
     function setMode(newMode) {
       mode = newMode;
-      document.querySelectorAll(".tab").forEach(btn => btn.classList.remove("active"));
-      document.querySelectorAll(".tab").forEach(btn => {
-        if (btn.textContent.includes(mode.split("_")[1])) btn.classList.add("active");
-      });
+      document.getElementById("btnOpen").classList.toggle("active", mode === "vs_open");
+      document.getElementById("btnCold").classList.toggle("active", mode === "vs_cold");
       generateSituation();
-    }
-
-    function generateTable(heroPos) {
-      const svg = document.getElementById("pokerTable");
-      document.querySelectorAll(".position-label").forEach(el => el.remove());
-
-      const centerX = 200;
-      const centerY = 100;
-      const rx = 140;
-      const ry = 60;
-
-      positions.forEach((pos, i) => {
-        const angle = (Math.PI * 2 / positions.length) * i - Math.PI / 2;
-        const x = centerX + rx * Math.cos(angle);
-        const y = centerY + ry * Math.sin(angle);
-
-        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        text.setAttribute("x", x);
-        text.setAttribute("y", y);
-        text.setAttribute("text-anchor", "middle");
-        text.setAttribute("alignment-baseline", "middle");
-        text.setAttribute("fill", pos === heroPos ? "#ff4081" : "#e0e0e0");
-        text.setAttribute("class", "position-label");
-        text.textContent = pos;
-        svg.appendChild(text);
-      });
+      document.getElementById("result").innerText = "";
     }
 
     function generateSituation() {
-      const heroIndex = Math.floor(Math.random() * 4);
-      const hero = positions[heroIndex];
-      const hand = hands[Math.floor(Math.random() * hands.length)];
-      currentSituation = { hero, hand };
-
-      generateTable(hero);
-
-      document.getElementById("info").innerText = `あなたのポジションは ${hero}。このハンドを${mode === "vs_open" ? "オープンレイズ" : "コール"}する？`;
-      document.getElementById("hand").innerText = `ハンド: ${hand}`;
-
       const actionArea = document.getElementById("actionButtons");
       actionArea.innerHTML = "";
       document.getElementById("result").innerText = "";
 
+      clearSeatHighlights();
+
       if (mode === "vs_open") {
+        const hero = positions[Math.floor(Math.random() * 4)]; // UTG〜BTN
+        const hand = hands[Math.floor(Math.random() * hands.length)];
+        currentSituation = { hero, hand };
+
+        highlightSeat(hero, "hero");
+
+        document.getElementById("info").innerText = `あなたのポジションは ${hero}。このハンドをオープンレイズする？`;
+        document.getElementById("hand").innerText = `ハンド: ${hand}`;
         addActionButton("レイズ", "raise");
         addActionButton("フォールド", "fold");
-      } else if (mode === "vs_3bet") {
+
+      } else if (mode === "vs_cold") {
+        const keys = Object.keys(ranges.vs_cold);
+        const selectedKey = keys[Math.floor(Math.random() * keys.length)];
+        const [hero, opener] = selectedKey.split("_vs_");
+        const hand = hands[Math.floor(Math.random() * hands.length)];
+
+        currentSituation = { hero, opener, hand };
+
+        highlightSeat(hero, "hero");
+        highlightSeat(opener, "opener");
+
+        document.getElementById("info").innerText = `${opener} がオープン。あなたは ${hero}。このハンドでどうする？`;
+        document.getElementById("hand").innerText = `ハンド: ${hand}`;
+
         addActionButton("コール", "call");
+        addActionButton("3bet", "3bet");
         addActionButton("フォールド", "fold");
       }
     }
@@ -118,13 +108,44 @@
     }
 
     function checkAnswer(action) {
-      const range = ranges[mode][currentSituation.hero] || [];
-      const isInRange = range.includes(currentSituation.hand);
-      const correct = (action === "raise" || action === "call") === isInRange;
+      if (mode === "vs_open") {
+        const openRange = ranges.vs_open[currentSituation.hero];
+        const isRaise = openRange.includes(currentSituation.hand);
+        const correct = (action === "raise" && isRaise) || (action === "fold" && !isRaise);
+        document.getElementById("result").innerText = correct
+          ? "✅ 正解！"
+          : `❌ 不正解。正解は「${isRaise ? "レイズ" : "フォールド"}」です`;
+      } else if (mode === "vs_cold") {
+        const key = `${currentSituation.hero}_vs_${currentSituation.opener}`;
+        const rangeObj = ranges.vs_cold[key];
 
-      document.getElementById("result").innerText = correct
-        ? "✅ 正解！"
-        : `❌ 不正解。正解は「${isInRange ? (mode === "vs_open" ? "レイズ" : "コール") : "フォールド"}」です`;
+        if (!rangeObj) {
+          document.getElementById("result").innerText = "この状況のレンジは未定義です。";
+          return;
+        }
+
+        const correctActions = Object.entries(rangeObj)
+          .filter(([k, v]) => v.includes(currentSituation.hand))
+          .map(([k]) => k);
+
+        if (correctActions.includes(action)) {
+          document.getElementById("result").innerText = "✅ 正解！";
+        } else {
+          document.getElementById("result").innerText = `❌ 不正解。正解は「${correctActions.join("、")}」です`;
+        }
+      }
+    }
+
+    function highlightSeat(position, type) {
+      const seatIndex = positions.indexOf(position);
+      const seat = document.getElementById(`seat-${seatIndex}`);
+      seat.classList.add(type);
+    }
+
+    function clearSeatHighlights() {
+      document.querySelectorAll(".seat").forEach(seat => {
+        seat.classList.remove("hero", "opener");
+      });
     }
 
     generateSituation();
