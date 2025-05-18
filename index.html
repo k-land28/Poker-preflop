@@ -9,6 +9,11 @@
 <body>
   <h1>Preflop Trainer</h1>
 
+  <div id="tabs">
+    <button class="tab active" onclick="setMode('vs_open')">vs オープン</button>
+    <button class="tab" onclick="setMode('vs_3bet')">vs 3ベット</button>
+  </div>
+
   <div id="tableContainer">
     <svg id="pokerTable" viewBox="0 0 400 200">
       <ellipse cx="200" cy="100" rx="160" ry="70" fill="#222" stroke="#00bcd4" stroke-width="3" />
@@ -37,12 +42,26 @@
         HJ: ["AA", "AKs", "AQs", "AJo", "99", "KTs"],
         CO: ["AA", "AKs", "AQs", "AJo", "KTs", "99", "88"],
         BTN: ["AA", "AKs", "AQs", "AJo", "KTs", "99", "88", "77", "66", "55", "A5s"]
+      },
+      vs_3bet: {
+        UTG: ["AA", "KK", "AKs"],
+        HJ: ["AA", "KK", "QQ", "AKs", "AQs"],
+        CO: ["AA", "KK", "QQ", "AKs", "AQs", "JJ"],
+        BTN: ["AA", "KK", "QQ", "JJ", "TT", "AKs", "AQs", "AJs"]
       }
     };
 
+    function setMode(newMode) {
+      mode = newMode;
+      document.querySelectorAll(".tab").forEach(btn => btn.classList.remove("active"));
+      document.querySelectorAll(".tab").forEach(btn => {
+        if (btn.textContent.includes(mode.split("_")[1])) btn.classList.add("active");
+      });
+      generateSituation();
+    }
+
     function generateTable(heroPos) {
       const svg = document.getElementById("pokerTable");
-      // remove old labels
       document.querySelectorAll(".position-label").forEach(el => el.remove());
 
       const centerX = 200;
@@ -68,22 +87,27 @@
     }
 
     function generateSituation() {
-      const heroIndex = Math.floor(Math.random() * 4); // UTG〜BTN
+      const heroIndex = Math.floor(Math.random() * 4);
       const hero = positions[heroIndex];
       const hand = hands[Math.floor(Math.random() * hands.length)];
       currentSituation = { hero, hand };
 
       generateTable(hero);
 
-      document.getElementById("info").innerText = `あなたのポジションは ${hero}。このハンドをオープンレイズする？`;
+      document.getElementById("info").innerText = `あなたのポジションは ${hero}。このハンドを${mode === "vs_open" ? "オープンレイズ" : "コール"}する？`;
       document.getElementById("hand").innerText = `ハンド: ${hand}`;
 
       const actionArea = document.getElementById("actionButtons");
       actionArea.innerHTML = "";
       document.getElementById("result").innerText = "";
 
-      addActionButton("レイズ", "raise");
-      addActionButton("フォールド", "fold");
+      if (mode === "vs_open") {
+        addActionButton("レイズ", "raise");
+        addActionButton("フォールド", "fold");
+      } else if (mode === "vs_3bet") {
+        addActionButton("コール", "call");
+        addActionButton("フォールド", "fold");
+      }
     }
 
     function addActionButton(label, action) {
@@ -94,12 +118,13 @@
     }
 
     function checkAnswer(action) {
-      const openRange = ranges.vs_open[currentSituation.hero] || [];
-      const isRaise = openRange.includes(currentSituation.hand);
-      const correct = (action === "raise" && isRaise) || (action === "fold" && !isRaise);
+      const range = ranges[mode][currentSituation.hero] || [];
+      const isInRange = range.includes(currentSituation.hand);
+      const correct = (action === "raise" || action === "call") === isInRange;
+
       document.getElementById("result").innerText = correct
         ? "✅ 正解！"
-        : `❌ 不正解。正解は「${isRaise ? "レイズ" : "フォールド"}」です`;
+        : `❌ 不正解。正解は「${isInRange ? (mode === "vs_open" ? "レイズ" : "コール") : "フォールド"}」です`;
     }
 
     generateSituation();
