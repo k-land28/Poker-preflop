@@ -3,21 +3,58 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>プリフロップアクション</title>
+  <title>ポーカー プリフロップレンジチェック</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: auto; }
-    button { margin: 5px; padding: 10px 15px; font-size: 16px; cursor: pointer; }
-    #modeButtons button.active { background-color: #4CAF50; color: white; }
-    #result { margin-top: 20px; font-size: 20px; }
-    #info { margin: 15px 0; font-weight: bold; }
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+      background-color: #121212;
+      color: #e0e0e0;
+    }
+
+    button {
+      margin: 5px;
+      padding: 10px 15px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #333;
+      color: #fff;
+      border: 1px solid #555;
+      border-radius: 5px;
+    }
+
+    button:hover {
+      background-color: #555;
+    }
+
+    #modeButtons button.active {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-size: 20px;
+    }
+
+    #info {
+      margin: 15px 0;
+      font-weight: bold;
+    }
+
+    #actionButtons {
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
-  <h1>プリフロップアクション</h1>
+  <h1>ポーカー プリフロップレンジチェック</h1>
 
   <div id="modeButtons">
-    <button id="btnOpen" class="active" onclick="setMode('vs_open')">オープンレンジ</button>
-    <button id="btn3bet" onclick="setMode('vs_3bet')">コールドアクション</button>
+    <button id="btnOpen" class="active" onclick="setMode('vs_open')">オープンレンジ確認</button>
+    <button id="btn3bet" onclick="setMode('vs_3bet')">3bet対応確認</button>
   </div>
 
   <div id="questionArea">
@@ -25,26 +62,19 @@
     <p id="hand"></p>
   </div>
 
-  <div>
-    <button onclick="checkAnswer('3bet')">3bet</button>
-    <button onclick="checkAnswer('call')">Call</button>
-    <button onclick="checkAnswer('fold')">Fold</button>
+  <div id="actionButtons">
+    <!-- アクションボタンがここに動的に追加されます -->
   </div>
 
   <p id="result"></p>
-  <button onclick="generateSituation()">NEXT</button>
+  <button onclick="generateSituation()">次の問題</button>
 
   <script>
     const positions = ["UTG", "MP", "CO", "BTN"];
     const hands = ["AA", "AKs", "AQs", "AJo", "KTs", "99"]; // 簡易サンプル
 
-    // modeによって問題生成や判定が変わる
     let mode = "vs_open";
 
-    // vs_open: 自分がオープンできるか
-    // vs_3bet: 自分が3betに対してどうするか
-
-    // レンジデータ（例）
     const ranges = {
       vs_open: {
         "UTG": ["AA", "AKs", "AQs", "99"],
@@ -53,7 +83,6 @@
         "BTN": ["AA", "AKs", "AQs", "AJo", "KTs", "99", "88", "77"]
       },
       vs_3bet: {
-        // "自分のポジション_vs_オープナー"
         "CO_vs_UTG": {
           "3bet": ["AKs", "QQ", "JJ"],
           "call": ["AQs", "99"],
@@ -71,7 +100,6 @@
 
     function setMode(newMode) {
       mode = newMode;
-      // ボタンのアクティブ切り替え
       document.getElementById("btnOpen").classList.toggle("active", mode === "vs_open");
       document.getElementById("btn3bet").classList.toggle("active", mode === "vs_3bet");
       generateSituation();
@@ -79,17 +107,21 @@
     }
 
     function generateSituation() {
+      const actionButtons = document.getElementById("actionButtons");
+      actionButtons.innerHTML = ""; // 一旦クリア
+
       if (mode === "vs_open") {
-        // 自分のポジションと手札だけランダムに出す
         const hero = positions[Math.floor(Math.random() * positions.length)];
         const hand = hands[Math.floor(Math.random() * hands.length)];
         currentSituation = { hero, hand };
 
         document.getElementById("info").innerText = `あなたのポジションは${hero}です。このハンドをオープンすべきか？`;
         document.getElementById("hand").innerText = `ハンド: ${hand}`;
+
+        addButton("レイズ", "3bet");
+        addButton("フォールド", "fold");
+
       } else if (mode === "vs_3bet") {
-        // opener と hero(3betするか検討する人) と手札
-        // openerはUTGかMPのどちらかに限定、heroはそれより後ろのポジション
         const openers = ["UTG", "MP"];
         const opener = openers[Math.floor(Math.random() * openers.length)];
         const openerIndex = positions.indexOf(opener);
@@ -99,27 +131,38 @@
 
         currentSituation = { opener, hero, hand };
 
-        document.getElementById("info").innerText = `${opener}がオープンしています。あなたは${hero}。このハンドで3betしますか？`;
+        document.getElementById("info").innerText = `${opener}がオープンしています。あなたは${hero}。このハンドでどうする？`;
         document.getElementById("hand").innerText = `ハンド: ${hand}`;
+
+        addButton("3bet", "3bet");
+        addButton("コール", "call");
+        addButton("フォールド", "fold");
       }
+
       document.getElementById("result").innerText = "";
+    }
+
+    function addButton(label, action) {
+      const btn = document.createElement("button");
+      btn.innerText = label;
+      btn.onclick = () => checkAnswer(action);
+      document.getElementById("actionButtons").appendChild(btn);
     }
 
     function checkAnswer(action) {
       let correct;
       if (mode === "vs_open") {
-        // heroのオープンレンジにhandがあればオープンすべき
         const openRange = ranges.vs_open[currentSituation.hero];
         if (!openRange) {
           document.getElementById("result").innerText = "そのポジションのレンジは未定義です";
           return;
         }
-        correct = (action === "3bet" && openRange.includes(currentSituation.hand)) || (action === "fold" && !openRange.includes(currentSituation.hand));
         if (action === "call") {
-          document.getElementById("result").innerText = "このモードでは『コール』は使いません。3bet（オープン）かフォールドを選んでください。";
+          document.getElementById("result").innerText = "このモードでは『コール』は使いません。";
           return;
         }
-        document.getElementById("result").innerText = correct ? "✅ 正解！" : `❌ 不正解。正解は「${openRange.includes(currentSituation.hand) ? "3bet（オープン）" : "フォールド"}」です`;
+        correct = (action === "3bet" && openRange.includes(currentSituation.hand)) || (action === "fold" && !openRange.includes(currentSituation.hand));
+        document.getElementById("result").innerText = correct ? "✅ 正解！" : `❌ 不正解。正解は「${openRange.includes(currentSituation.hand) ? "レイズ" : "フォールド"}」です`;
       } else if (mode === "vs_3bet") {
         const key = `${currentSituation.hero}_vs_${currentSituation.opener}`;
         const rangeObj = ranges.vs_3bet[key];
