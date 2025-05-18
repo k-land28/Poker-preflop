@@ -1,64 +1,67 @@
 const positions = ["UTG", "HJ", "CO", "BTN", "SB", "BB"];
 
-const questions = {
+const hands = {
   open: [
-    { question: "Your Position: CO", hero: "CO" },
-    { question: "Your Position: BTN", hero: "BTN" },
+    { question: "Your Position: CO", hand: "AJo", correct: "open", position: "CO" },
+    { question: "Your Position: BTN", hand: "KTs", correct: "open", position: "BTN" },
   ],
   cold: [
-    { question: "Open Raise: CO\nYour Position: BTN", opener: "CO", hero: "BTN" },
-    { question: "Open Raise: HJ\nYour Position: BB", opener: "HJ", hero: "BB" },
+    { question: "Open Raise: CO\nYour Position: BTN", hand: "AQs", opener: "CO", self: "BTN", correct: "call" },
+    { question: "Open Raise: UTG\nYour Position: BB", hand: "KQo", opener: "UTG", self: "BB", correct: "fold" },
   ],
   vs3bet: [
-    { question: "You Opened: HJ\n3Bet from BTN\nYour Position: HJ", opener: "BTN", hero: "HJ", vs3bet: true },
+    { question: "You Opened from HJ\n3Bet by BTN\nYour Position: HJ", hand: "QQ", correct: "4bet" },
+    { question: "You Opened from CO\n3Bet by SB\nYour Position: CO", hand: "ATs", correct: "fold" },
   ]
 };
 
-let currentTab = "open";
+let currentMode = "open";
 let currentQuestionIndex = 0;
 
-function updateQuestion() {
-  const q = questions[currentTab][currentQuestionIndex];
-  document.getElementById("question-text").innerText = q.question;
+const questionEl = document.getElementById("question");
+const handEl = document.getElementById("hand");
+const resultEl = document.getElementById("result");
 
-  // 位置の初期化
-  positions.forEach(pos => {
-    const el = document.getElementById(pos);
-    el.classList.remove("hero", "open");
-  });
-
-  if (q.hero) document.getElementById(q.hero).classList.add("hero");
-  if (q.opener) document.getElementById(q.opener).classList.add("open");
-
-  const optionsContainer = document.getElementById("options-container");
-  optionsContainer.innerHTML = "";
-
-  let options = [];
-
-  if (currentTab === "open") {
-    options = ["Fold", "Open"];
-  } else if (currentTab === "cold") {
-    options = ["Fold", "Call", "3Bet"];
-  } else if (currentTab === "vs3bet") {
-    options = ["Fold", "Call", "4Bet"];
-  }
-
-  options.forEach(opt => {
-    const btn = document.createElement("button");
-    btn.innerText = opt;
-    btn.onclick = () => alert(`You selected: ${opt}`);
-    optionsContainer.appendChild(btn);
+function setPositions(opener, self) {
+  document.querySelectorAll(".position").forEach(pos => {
+    pos.classList.remove("highlight-open", "highlight-self");
+    const label = pos.getAttribute("data-pos");
+    if (label === opener) pos.classList.add("highlight-open");
+    if (label === self) pos.classList.add("highlight-self");
   });
 }
 
-document.querySelectorAll(".tab-button").forEach(btn => {
-  btn.addEventListener("click", () => {
-    document.querySelectorAll(".tab-button").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-    currentTab = btn.dataset.tab;
+function showQuestion() {
+  const questionSet = hands[currentMode];
+  const data = questionSet[currentQuestionIndex];
+  questionEl.textContent = data.question;
+  handEl.textContent = `Your Hand: ${data.hand}`;
+  resultEl.textContent = "";
+  if (currentMode === "cold") {
+    setPositions(data.opener, data.self);
+  } else {
+    setPositions(null, data.position || data.self);
+  }
+}
+
+document.querySelectorAll(".tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+    currentMode = tab.getAttribute("data-mode");
     currentQuestionIndex = 0;
-    updateQuestion();
+    showQuestion();
   });
 });
 
-window.onload = updateQuestion;
+document.querySelectorAll(".option-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const choice = btn.getAttribute("data-choice");
+    const correct = hands[currentMode][currentQuestionIndex].correct;
+    resultEl.textContent = choice === correct ? "✅ Correct!" : `❌ Wrong (Correct: ${correct.toUpperCase()})`;
+    currentQuestionIndex = (currentQuestionIndex + 1) % hands[currentMode].length;
+    setTimeout(showQuestion, 1200);
+  });
+});
+
+showQuestion();
