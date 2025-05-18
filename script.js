@@ -43,10 +43,10 @@ function generateSituation() {
 
   document.getElementById("info").textContent =
     mode === "vs_open"
-      ? `${heroPos}からオープンしますか？`
-      : `${openerPos}がオープンしました。${heroPos}でどう対応しますか？`;
+      ? `${heroPos}のあなたのアクションは？`
+      : `${openerPos}がオープンしました。${heroPos}のアクションは？`;
 
-  document.getElementById("hand").textContent = `あなたのハンド: ${hand}`;
+  document.getElementById("hand").textContent = `Your Hand: ${hand}`;
 
   const actionArea = document.getElementById("actionButtons");
   actionArea.innerHTML = "";
@@ -73,9 +73,9 @@ function checkAnswer(action, hand, heroPos, openerPos) {
   let correct = false;
 
   if (mode === "vs_open") {
-    correct = action === "オープン" ? strongHands.includes(hand) : !strongHands.includes(hand);
+    correct = action === "Raise" ? strongHands.includes(hand) : !strongHands.includes(hand);
   } else {
-    correct = action === "スリーベット" ? strongHands.includes(hand) : !strongHands.includes(hand);
+    correct = action === "3Bet" ? strongHands.includes(hand) : !strongHands.includes(hand);
   }
 
   document.getElementById("result").textContent = correct ? "正解！" : "不正解...";
