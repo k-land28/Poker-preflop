@@ -4,28 +4,26 @@ body {
   font-family: sans-serif;
   text-align: center;
   margin: 0;
-  padding: 0;
+  padding: 0 1rem;
   overflow-x: hidden;
 }
 
 #tabs {
   margin-bottom: 1rem;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
   gap: 0.5rem;
 }
 
 .tab-button {
-  padding: 0.5rem 1rem;
+  padding: 0.5rem;
   font-size: 1rem;
   border: none;
   background-color: #333;
   color: #fff;
   cursor: pointer;
   border-radius: 6px;
-  flex: 1 1 100px;
-  max-width: 140px;
+  transition: background-color 0.2s ease;
 }
 
 .tab-button.active {
@@ -60,13 +58,45 @@ body {
 #actionButtons button,
 #nextButton {
   margin: 0.5rem;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 1.5rem;
   font-size: 1rem;
   border-radius: 8px;
   border: none;
-  background-color: #00bcd4;
-  color: #000;
   cursor: pointer;
+  min-width: 100px;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.3s ease;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+
+#actionButtons button:hover,
+#nextButton:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.4);
+}
+
+#actionButtons button.raise {
+  background-color: #00eaff;
+  color: #fff;
+  box-shadow: 0 0 8px #00eaffaa;
+}
+
+#actionButtons button.call {
+  background-color: #29ff8a;
+  color: #fff;
+  box-shadow: 0 0 8px #29ff8aaa;
+}
+
+#actionButtons button.fold {
+  background-color: #ff0055;
+  color: #fff;
+  box-shadow: 0 0 8px #ff0055aa;
+}
+
+#nextButton {
+  background-color: #6c63ff;
+  color: #fff;
+  box-shadow: 0 0 10px #6c63ffaa;
 }
 
 #resultText {
