@@ -3,42 +3,97 @@
 const positions = ['UTG', 'MP', 'CO', 'BTN', 'SB', 'BB'];
 const hands = ['AA', 'KK', 'QQ', 'JJ', 'AKs', 'AQo', 'A5s', 'KJo', 'T9s'];
 
-function generateRandomQuestion(mode) {
-  const hero = positions[Math.floor(Math.random() * positions.length)];
-  let villain;
-  do {
-    villain = positions[Math.floor(Math.random() * positions.length)];
-  } while (villain === hero);
+function isBefore(p1, p2) {
+  return positions.indexOf(p1) < positions.indexOf(p2);
+}
 
+function getValidPositions(before = null) {
+  const idx = before ? positions.indexOf(before) : positions.indexOf('SB');
+  return positions.slice(0, idx); // exclude SB, BB
+}
+
+function generateRandomQuestion(mode) {
   const hand = hands[Math.floor(Math.random() * hands.length)];
+  let hero, villain, openPos, threeBetPos;
+
   let question = {};
 
   if (mode === 'open_none') {
+    hero = positions[Math.floor(Math.random() * positions.length)];
     question = {
-      situation: `${hero}からオープンするか判断してください。`,
-      correct: 'Open',
-      choices: ['Fold', 'Open'],
+      situation: `${hero}からOpen Raiseしますか？`,
+      correct: 'Raise',
+      choices: ['Raise', 'Fold'],
       actionPosition: hero,
       stage: 'open_none'
     };
-  } else if (mode === 'vs_open') {
+  }
+
+  else if (mode === 'vs_open') {
+    do {
+      hero = positions[Math.floor(Math.random() * positions.length)];
+    } while (hero === 'UTG');
+
+    const validOpeners = getValidPositions(hero);
+    villain = validOpeners[Math.floor(Math.random() * validOpeners.length)];
+
     question = {
-      situation: `${villain}がオープンした場合、${hero}のアクションは？`,
+      situation: `${villain}がOpen Raiseしました。\nあなた（${hero}）のアクションは？`,
       correct: '3Bet',
-      choices: ['Fold', 'Call', '3Bet'],
+      choices: ['3Bet', 'Call', 'Fold'],
       openPosition: villain,
       actionPosition: hero,
       stage: 'vs_open'
     };
-  } else if (mode === 'vs_3bet') {
+  }
+
+  else if (mode === 'vs_3bet') {
+    if (Math.random() < 0.5) {
+      // 自分がUTGでオープン → 相手が3Bet
+      hero = 'UTG';
+      const valid3Bettors = positions.filter(p => isBefore(hero, p) && p !== 'BB');
+      threeBetPos = valid3Bettors[Math.floor(Math.random() * valid3Bettors.length)];
+
+      question = {
+        situation: `あなた（${hero}）のOpen Raiseに${threeBetPos}が3Betしました。\nあなた（${hero}）のアクションは？`,
+        correct: '4Bet',
+        choices: ['4Bet', 'Call', 'Fold'],
+        openPosition: hero,
+        threeBetPosition: threeBetPos,
+        actionPosition: hero,
+        stage: 'vs_3bet'
+      };
+    } else {
+      // UTGがOpen → 他人が3Bet → 自分が対応
+      openPos = 'UTG';
+      const valid3Bettors = positions.filter(p => isBefore(openPos, p));
+      threeBetPos = valid3Bettors[Math.floor(Math.random() * valid3Bettors.length)];
+      const validHeroes = positions.filter(p => isBefore(threeBetPos, p));
+      hero = validHeroes[Math.floor(Math.random() * validHeroes.length)];
+
+      question = {
+        situation: `${openPos}がOpen Raiseし、${threeBetPos}が3Betしました。\nあなた（${hero}）のアクションは？`,
+        correct: '4Bet',
+        choices: ['4Bet', 'Call', 'Fold'],
+        openPosition: openPos,
+        threeBetPosition: threeBetPos,
+        actionPosition: hero,
+        stage: 'vs_3bet'
+      };
+    }
+  }
+
+  else if (mode === 'bb_defense') {
+    const validOpeners = getValidPositions('BB');
+    villain = validOpeners[Math.floor(Math.random() * validOpeners.length)];
+
     question = {
-      situation: `${hero}がオープンし、${villain}が3Betした場合、${hero}のアクションは？`,
-      correct: 'Fold',
-      choices: ['Fold', 'Call', '4Bet'],
-      openPosition: hero,
-      threeBetPosition: villain,
-      actionPosition: hero,
-      stage: 'vs_3bet'
+      situation: `${villain}がOpen Raiseしました。\nあなた（BB）のアクションは？`,
+      correct: 'Call',
+      choices: ['3Bet', 'Call', 'Fold'],
+      actionPosition: 'BB',
+      openPosition: villain,
+      stage: 'bb_defense'
     };
   }
 
@@ -54,6 +109,7 @@ const handText = document.getElementById('handText');
 const actionButtons = document.getElementById('actionButtons');
 const resultText = document.getElementById('resultText');
 const nextButton = document.getElementById('nextButton');
+nextButton.textContent = 'NEXT';
 const tabs = document.querySelectorAll('.tab-button');
 
 function clearPositions() {
@@ -62,7 +118,6 @@ function clearPositions() {
 
 function createPositions(question) {
   clearPositions();
-
   const width = tableEl.clientWidth;
   const height = tableEl.clientHeight;
   const centerX = width / 2;
@@ -70,9 +125,7 @@ function createPositions(question) {
   const radiusX = width / 2 - 40;
   const radiusY = height / 2 - 30;
   const count = positions.length;
-
-  const heroPos = question.actionPosition;
-  const heroIndex = positions.indexOf(heroPos);
+  const heroIndex = positions.indexOf(question.actionPosition);
   const rotate = (i) => (i - heroIndex + count / 2 + count) % count;
 
   for (let i = 0; i < count; i++) {
@@ -124,6 +177,13 @@ function displayQuestion() {
   q.choices.forEach(choice => {
     const btn = document.createElement('button');
     btn.textContent = choice;
+    if (/fold/i.test(choice)) {
+      btn.classList.add('fold');
+    } else if (/call/i.test(choice)) {
+      btn.classList.add('call');
+    } else {
+      btn.classList.add('raise');
+    }
     btn.addEventListener('click', () => {
       if (choice === q.correct) {
         resultText.style.color = '#0faa00';
@@ -152,5 +212,4 @@ tabs.forEach(tab => {
 });
 
 nextButton.addEventListener('click', displayQuestion);
-
 window.addEventListener('load', () => switchMode(currentMode));
